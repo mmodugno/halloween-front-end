@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-.candidates-list {
+/* .candidates-list {
   display: flex;
   justify-content: center;
   gap: 20px;
@@ -12,19 +12,4 @@
   display: flex;
   justify-content: center;
   gap: 20px;
-}
-
-.candidate-card {
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+} */
