@@ -48,7 +48,10 @@ const Home = () => {
   return (
     <div>
       <Header />
-      <Grid container spacing={4} className="candidates-list">
+      <Container>
+          <VotedCandidateCard id={vote} />
+      </Container>
+      <Grid container spacing={4}>
         {candidates.map(candidate => (
           <CandidateCard
             key={candidate.id}
@@ -63,9 +66,6 @@ const Home = () => {
           />
         ))}
       </Grid>
-      <Container className="candidate-vote">
-          <VotedCandidateCard id={vote} />
-      </Container>
     </div>
   );
 };
