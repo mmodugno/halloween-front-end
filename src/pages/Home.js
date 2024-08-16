@@ -66,7 +66,7 @@ const Home = () => {
     )
   }
   return (
-    <Container style="background-color:#2f2c36;">
+    <Container>
       <Header />
       <Container>
         <VotedCandidateCard id={vote} />
