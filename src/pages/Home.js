@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import Header from '../components/Header';
 import CandidateCard from '../components/CandidateCard';
 import VotedCandidateCard from '../components/VotedCandidateCard';
+import { detectIncognito } from "detectincognitojs";
 
 const Home = () => {
   const [candidates, setCandidates] = useState([
@@ -20,6 +21,8 @@ const Home = () => {
 
   const [vote, setVote] = useState(0)
 
+  const [isIncognito, setIncognito] = useState(false);
+
   useEffect(() => {
     const vote = JSON.parse(localStorage.getItem('halloween-vote'));
     if (vote) {
@@ -30,6 +33,15 @@ const Home = () => {
   useEffect(() => {
     localStorage.setItem('halloween-vote', JSON.stringify(vote));
   }, [vote]);
+
+  useEffect(() => {
+    async function checkIncognito() {
+      const isIncognito = await detectIncognito()
+      setIncognito(isIncognito.isPrivate)
+    }
+    checkIncognito()
+  }, [])
+
   
   const handleVote = (id) => {
     setCandidates(
@@ -45,8 +57,15 @@ const Home = () => {
     setVote(id)
   }
 
+  if (isIncognito) {
+    return (
+      <Container maxWidth="sm">
+        <img src={require('../assets/not-pass.gif')} height="100%" width="100%" />
+      </Container>
+    )
+  }
   return (
-    <div>
+    <Container>
       <Header />
       <Container>
           <VotedCandidateCard id={vote} />
@@ -66,7 +85,7 @@ const Home = () => {
           />
         ))}
       </Grid>
-    </div>
+    </Container>
   );
 };
 
