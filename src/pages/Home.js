@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import CandidateCard from '../components/CandidateCard';
+import VotedCandidateCard from '../components/VotedCandidateCard';
 
 const Home = () => {
   const [candidates, setCandidates] = useState([
@@ -9,6 +10,19 @@ const Home = () => {
     { id: 3, name: 'Candidato 3', description: 'Descripción 3', votes: 0 }
   ]);
 
+  const [vote, setVote] = useState(0)
+
+  useEffect(() => {
+    const vote = JSON.parse(localStorage.getItem('halloween-vote'));
+    if (vote) {
+     setVote(vote);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('halloween-vote', JSON.stringify(vote));
+  }, [vote]);
+  
   const handleVote = (id) => {
     setCandidates(
       candidates.map(candidate =>
@@ -18,6 +32,10 @@ const Home = () => {
       )
     );
   };
+
+  const handleUserVote = id => {
+    setVote(id)
+  }
 
   return (
     <div>
@@ -29,9 +47,16 @@ const Home = () => {
             name={candidate.name}
             description={candidate.description}
             votes={candidate.votes}
-            onVote={() => handleVote(candidate.id)}
+            hasVoted={vote !== 0}
+            onVote={() => {
+              handleUserVote(candidate.id)
+              handleVote(candidate.id)
+            }}
           />
         ))}
+      </div>
+      <div className="candidate-vote">
+          <VotedCandidateCard id={vote} />
       </div>
     </div>
   );

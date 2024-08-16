@@ -8,6 +8,12 @@
   gap: 20px;
 }
 
+.candidate-vote {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
 .candidate-card {
   border: 1px solid #ccc;
   padding: 20px;
