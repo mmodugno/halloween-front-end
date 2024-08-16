@@ -7,7 +7,7 @@ const CandidateCard = ({ name, description, votes, onVote, hasVoted }) => {
       <h2>{name}</h2>
       <p>{description}</p>
       <p>Votos: {votes}</p>
-      <Button variant="contained" disabled={hasVoted} onClick={onVote}>Votar {hasVoted}</Button>
+      <Button variant="contained" disabled={hasVoted} onClick={onVote}>Votar</Button>
     </div>
   );
 };
