@@ -26,7 +26,7 @@ const Home = () => {
   useEffect(() => {
     const vote = JSON.parse(localStorage.getItem('halloween-vote'));
     if (vote) {
-     setVote(vote);
+      setVote(vote);
     }
   }, []);
 
@@ -42,7 +42,7 @@ const Home = () => {
     checkIncognito()
   }, [])
 
-  
+
   const handleVote = (id) => {
     setCandidates(
       candidates.map(candidate =>
@@ -58,17 +58,18 @@ const Home = () => {
   }
 
   if (isIncognito) {
+    document.body.style = 'background-color:#2f2c36;';
     return (
-      <Container maxWidth="sm">
-        <img src={require('../assets/not-pass.gif')} height="100%" width="100%" />
-      </Container>
+      <div class="shall-not-pass">
+        <img src={require('../assets/not-pass.gif')} alt="you can't pass" />
+      </div>
     )
   }
   return (
-    <Container>
+    <Container style="background-color:#2f2c36;">
       <Header />
       <Container>
-          <VotedCandidateCard id={vote} />
+        <VotedCandidateCard id={vote} />
       </Container>
       <Grid container spacing={4}>
         {candidates.map(candidate => (
