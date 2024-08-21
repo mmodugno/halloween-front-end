@@ -34,7 +34,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-        const vote = JSON.parse(localStorage.getItem('halloween-vote'));
+    const vote = JSON.parse(localStorage.getItem('halloween-vote'));
     if (vote) {
       setSelectedCandidate(candidates.find(candidate => candidate.id === vote));
       setVote(vote);

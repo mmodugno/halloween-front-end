@@ -1,24 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import SendIcon from '@mui/icons-material/Send';
 
 import '../styles/Splash.css';
 
-function Splash() {
+function Splash({setPassphrase}) {
+    const [wrongPassword, setWrongPassword] = useState(false)
+    const [passphraseInput, setPassphraseInput] = useState('')
+    const [ghostClick, setGhostClick] = useState(0)
+
+    function validatePassphrase() {
+        // HACK: Until we have user json, replace with api call
+        if (passphraseInput === 'maga') {
+            localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
+            setPassphrase(passphraseInput)
+            return setWrongPassword(false)
+        }
+        setWrongPassword(true)
+    }
     return (
         <Box style={{ height: "100vh", backgroundColor: "#ff4814" }} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
-            <div>
-                <Typography variant="h1" gutterBottom>
-                    Holis
+            <Box>
+                <Typography variant="h3" gutterBottom>
+                    Bienvenidos
                 </Typography>
-
-            </div>
-            <div>
-                <svg class="ghost" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                    width="127.433px" height="132.743px" viewBox="0 0 127.433 132.743" enable-background="new 0 0 127.433 132.743"
+            </Box>
+            <Box onClick={() => setGhostClick(ghostClick+1)}>
+                <svg className="ghost" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                    width="127.433px" height="132.743px" viewBox="0 0 127.433 132.743" enableBackground="new 0 0 127.433 132.743"
                     xmlSpace="preserve">
                     <path fill="#FFF6F4" d="M116.223,125.064c1.032-1.183,1.323-2.73,1.391-3.747V54.76c0,0-4.625-34.875-36.125-44.375
                     s-66,6.625-72.125,44l-0.781,63.219c0.062,4.197,1.105,6.177,1.808,7.006c1.94,1.811,5.408,3.465,10.099-0.6
@@ -32,12 +45,12 @@ function Splash() {
                     c-0.001,0-0.002-0.001-0.003-0.001c2.221,1.871,4.536,2.88,6.912,2.986c0.333,0.014,0.67,0.012,1.007-0.01
                     c3.163-0.191,5.572-1.942,6.888-3.166l0.452-0.453c0.021-0.019,0.04-0.041,0.06-0.061l0.034-0.034
                     c-0.007,0.007-0.015,0.014-0.021,0.02C71.666,63.771,71.892,63.307,71.916,62.782z"/>
-                    <circle fill="#FCEFED" stroke="#FEEBE6" stroke-miterlimit="10" cx="18.614" cy="99.426" r="3.292" />
-                    <circle fill="#FCEFED" stroke="#FEEBE6" stroke-miterlimit="10" cx="95.364" cy="28.676" r="3.291" />
-                    <circle fill="#FCEFED" stroke="#FEEBE6" stroke-miterlimit="10" cx="24.739" cy="93.551" r="2.667" />
-                    <circle fill="#FCEFED" stroke="#FEEBE6" stroke-miterlimit="10" cx="101.489" cy="33.051" r="2.666" />
-                    <circle fill="#FCEFED" stroke="#FEEBE6" stroke-miterlimit="10" cx="18.738" cy="87.717" r="2.833" />
-                    <path fill="#FCEFED" stroke="#FEEBE6" stroke-miterlimit="10" d="M116.279,55.814c-0.021-0.286-2.323-28.744-30.221-41.012
+                    <circle fill="#FCEFED" stroke="#FEEBE6" strokeMiterlimit="10" cx="18.614" cy="99.426" r="3.292" />
+                    <circle fill="#FCEFED" stroke="#FEEBE6" strokeMiterlimit="10" cx="95.364" cy="28.676" r="3.291" />
+                    <circle fill="#FCEFED" stroke="#FEEBE6" strokeMiterlimit="10" cx="24.739" cy="93.551" r="2.667" />
+                    <circle fill="#FCEFED" stroke="#FEEBE6" strokeMiterlimit="10" cx="101.489" cy="33.051" r="2.666" />
+                    <circle fill="#FCEFED" stroke="#FEEBE6" strokeMiterlimit="10" cx="18.738" cy="87.717" r="2.833" />
+                    <path fill="#FCEFED" stroke="#FEEBE6" strokeMiterlimit="10" d="M116.279,55.814c-0.021-0.286-2.323-28.744-30.221-41.012
                     c-7.806-3.433-15.777-5.173-23.691-5.173c-16.889,0-30.283,7.783-37.187,15.067c-9.229,9.736-13.84,26.712-14.191,30.259
                     l-0.748,62.332c0.149,2.133,1.389,6.167,5.019,6.167c1.891,0,4.074-1.083,6.672-3.311c4.96-4.251,7.424-6.295,9.226-6.295
                     c1.339,0,2.712,1.213,5.102,3.762c4.121,4.396,7.461,6.355,10.833,6.355c2.713,0,5.311-1.296,7.942-3.962
@@ -53,23 +66,31 @@ function Splash() {
                     c1.564,0,2.833-1.269,2.833-2.833c0-1.355-0.954-2.485-2.226-2.764c4.419-1.285,9.269-2.074,14.437-2.074
                     c7.636,0,15.336,1.684,22.887,5.004c26.766,11.771,29.011,39.047,29.027,39.251V121.405z"/>
                 </svg>
-                <p class="shadowFrame"><svg version="1.1" class="shadow" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="61px" y="20px"
-                    width="122.436px" height="39.744px" viewBox="0 0 122.436 39.744" enable-background="new 0 0 122.436 39.744"
+                <p className="shadowFrame"><svg version="1.1" className="shadow" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="61px" y="20px"
+                    width="122.436px" height="39.744px" viewBox="0 0 122.436 39.744" enableBackground="new 0 0 122.436 39.744"
                     xmlSpace="preserve">
                     <ellipse fill="#EF3D23" cx="61.128" cy="19.872" rx="49.25" ry="8.916" />
                 </svg></p>
-            </div>
-            <div>
-                <TextField
-                    required
-                    id="outlined-required"
-                    label="Contraseña"
-                    defaultValue=""
-                />
-                <Button variant="contained" endIcon={<SendIcon />}>
-                </Button>
-
-            </div>
+            </Box>
+            <Box>
+                <ButtonGroup variant="contained" aria-label="Basic button group">
+                    <TextField
+                        required
+                        value={passphraseInput}
+                        onChange={p => setPassphraseInput(p.target.value)}
+                        label="Contraseña"
+                    />
+                    <Button
+                        sx={{backgroundColor: "#000000 !important"}}
+                        onClick={() => validatePassphrase()}
+                    >
+                        <SendIcon />
+                    </Button>
+                </ButtonGroup>
+            </Box>
+            <Box sx={{mt: 2}}>
+                <span>{wrongPassword ? "⚠️ Contraseña incorrecta." : ""}</span>
+            </Box>
         </Box>
     );
 }
