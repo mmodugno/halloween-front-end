@@ -5,13 +5,20 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import SendIcon from '@mui/icons-material/Send';
+import EasterEgg from '../components/EasterEgg';
 
 import '../styles/Splash.css';
 
 function Splash({setPassphrase}) {
     const [wrongPassword, setWrongPassword] = useState(false)
     const [passphraseInput, setPassphraseInput] = useState('')
-    const [ghostClick, setGhostClick] = useState(0)
+    const [ghostClicks, setGhostClicks] = useState(0)
+    const [openEasterEgg, setOpenEasterEgg] = useState(false)
+
+    const ghostClick = () => {
+        setGhostClicks(ghostClicks + 1)
+        if (ghostClicks === 10) setOpenEasterEgg(true)
+    }
 
     function validatePassphrase() {
         // HACK: Until we have user json, replace with api call
@@ -29,7 +36,7 @@ function Splash({setPassphrase}) {
                     Bienvenidos
                 </Typography>
             </Box>
-            <Box onClick={() => setGhostClick(ghostClick+1)}>
+            <Box onClick={() => ghostClick()}>
                 <svg className="ghost" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                     width="127.433px" height="132.743px" viewBox="0 0 127.433 132.743" enableBackground="new 0 0 127.433 132.743"
                     xmlSpace="preserve">
@@ -91,6 +98,7 @@ function Splash({setPassphrase}) {
             <Box sx={{mt: 2}}>
                 <span>{wrongPassword ? "⚠️ Contraseña incorrecta." : ""}</span>
             </Box>
+            <EasterEgg open={openEasterEgg} setOpen={setOpenEasterEgg} />
         </Box>
     );
 }
