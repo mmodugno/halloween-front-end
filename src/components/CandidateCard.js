@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 
 const CandidateCard = ({
   name,
-  description,
+  costume,
   votes,
   onVote,
   hasVoted,
@@ -26,10 +26,10 @@ const CandidateCard = ({
       >
         <CardContent>
           <Typography variant="h6" component="div" gutterBottom style={{ fontWeight: 'bold' }}>
-            {name}
+            {costume}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            {description}
+            {name}
           </Typography>
           <Button
             variant="contained"
