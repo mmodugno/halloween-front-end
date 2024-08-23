@@ -1,9 +1,11 @@
 import React from 'react';
 
-const VotedCandidateCard = ({ name }) => {
-  if (name) return (
+const VotedCandidateCard = ({ costume }) => {
+
+  //console.log(costume)
+  if (costume) return (
     <div className="candidate-card">
-      <h2>Votaste a: {name}</h2>
+      <h2>Votaste a: {costume}</h2>
     </div>
   );
 };
