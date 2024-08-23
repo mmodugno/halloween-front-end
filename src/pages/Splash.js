@@ -9,7 +9,7 @@ import EasterEgg from '../components/EasterEgg';
 
 import '../styles/Splash.css';
 
-function Splash({setPassphrase, setUserID}) {
+function Splash({ setPassphrase, setUserID }) {
     const [wrongPassword, setWrongPassword] = useState(false)
     const [passphraseInput, setPassphraseInput] = useState('')
     const [ghostClicks, setGhostClicks] = useState(0)
@@ -24,26 +24,29 @@ function Splash({setPassphrase, setUserID}) {
     }
 
     async function validatePassphrase() {
-    const requestLogInOptions = {
-        method: 'GET',
-        headers: {
-        'User': passphraseInput,
-        },
-    };
-    try{
-        const userData = await(await fetch('http://localhost:8080/api/users/login', requestLogInOptions)).json()
-        setUserID(userData.id)
-        localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
-        setPassphrase(passphraseInput)
-        return setWrongPassword(false)
-    }
-    catch (e){
-        console.log(e);        
-        setWrongPassword(true)
-    }
+        const requestLogInOptions = {
+            method: 'GET',
+            headers: {
+                'User': passphraseInput,
+            },
+        };
+        try {
+            const userData = await (await fetch('http://localhost:8080/api/users/login', requestLogInOptions)).json()
+            setUserID(userData.id)
+            localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
+            localStorage.setItem('halloween-user', JSON.stringify(passphraseInput));
+            setPassphrase(passphraseInput)
+            return setWrongPassword(false)
+        }
+        catch (e) {
+            console.log(e);
+            setWrongPassword(true)
+        }
 
         if (passphraseInput === 'maga') {
+            setUserID(1)
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
+            localStorage.setItem('halloween-user', JSON.stringify(1));
             setPassphrase(passphraseInput)
             return setWrongPassword(false)
         }
@@ -109,14 +112,14 @@ function Splash({setPassphrase, setUserID}) {
                         label="Contraseña"
                     />
                     <Button
-                        sx={{backgroundColor: "#000000 !important"}}
+                        sx={{ backgroundColor: "#000000 !important" }}
                         onClick={async () => await validatePassphrase()}
                     >
                         <SendIcon />
                     </Button>
                 </ButtonGroup>
             </Box>
-            <Box sx={{mt: 2}}>
+            <Box sx={{ mt: 2 }}>
                 <span>{wrongPassword ? "⚠️ Contraseña incorrecta." : ""}</span>
             </Box>
             <EasterEgg open={openEasterEgg} setOpen={setOpenEasterEgg} />

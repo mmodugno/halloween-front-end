@@ -9,7 +9,9 @@ function App() {
   
   useEffect(() => {
     const pw = JSON.parse(localStorage.getItem('halloween-passphrase'));
+    const userID = JSON.parse(localStorage.getItem('halloween-user'));
     if (pw) {
+      setUserID(userID)
       setPassphrase(pw)
     }
   }, []);

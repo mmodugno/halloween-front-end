@@ -31,9 +31,6 @@ const CandidateCard = ({
           <Typography variant="body2" color="textSecondary">
             {name}
           </Typography>
-          <Typography variant="body2" color="textSecondary">
-            {votes}
-          </Typography>
           <Button
             variant="contained"
             disabled={hasVoted || disableVoteButton}

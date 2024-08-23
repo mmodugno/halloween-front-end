@@ -35,7 +35,6 @@ const Home = ({passphrase, userID}) => {
         setCandidates(data);
       })
       .catch(error => {
-        console.error('error', error);
       });
   }, []);
 
