@@ -9,7 +9,7 @@ import EasterEgg from '../components/EasterEgg';
 
 import '../styles/Splash.css';
 
-function Splash({setPassphrase}) {
+function Splash({setPassphrase, setUserID}) {
     const [wrongPassword, setWrongPassword] = useState(false)
     const [passphraseInput, setPassphraseInput] = useState('')
     const [ghostClicks, setGhostClicks] = useState(0)
@@ -17,11 +17,31 @@ function Splash({setPassphrase}) {
 
     const ghostClick = () => {
         setGhostClicks(ghostClicks + 1)
-        if (ghostClicks === 10) setOpenEasterEgg(true)
+        if (ghostClicks === 10) {
+            setOpenEasterEgg(true)
+            setGhostClicks(0)
+        }
     }
 
-    function validatePassphrase() {
-        // HACK: Until we have user json, replace with api call
+    async function validatePassphrase() {
+    const requestLogInOptions = {
+        method: 'GET',
+        headers: {
+        'User': passphraseInput,
+        },
+    };
+    try{
+        const userData = await(await fetch('http://localhost:8080/api/users/login', requestLogInOptions)).json()
+        setUserID(userData.id)
+        localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
+        setPassphrase(passphraseInput)
+        return setWrongPassword(false)
+    }
+    catch (e){
+        console.log(e);        
+        setWrongPassword(true)
+    }
+
         if (passphraseInput === 'maga') {
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             setPassphrase(passphraseInput)
@@ -29,6 +49,7 @@ function Splash({setPassphrase}) {
         }
         setWrongPassword(true)
     }
+
     return (
         <Box style={{ height: "100vh", backgroundColor: "#ff4814" }} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
             <Box>
@@ -89,7 +110,7 @@ function Splash({setPassphrase}) {
                     />
                     <Button
                         sx={{backgroundColor: "#000000 !important"}}
-                        onClick={() => validatePassphrase()}
+                        onClick={async () => await validatePassphrase()}
                     >
                         <SendIcon />
                     </Button>

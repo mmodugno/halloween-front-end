@@ -14,7 +14,7 @@ const CandidateCard = ({
   disableVoteButton,
 }) => {
   return (
-    <Grid item xs={12} sm={6} md={4} lg={2}>
+    // <Grid item xs={12} sm={6} md={4} lg={2}>
       <Card
         variant="outlined"
         style={{
@@ -48,7 +48,7 @@ const CandidateCard = ({
           </Button>
         </CardContent>
       </Card>
-    </Grid>
+    // </Grid>
   );
 };
 

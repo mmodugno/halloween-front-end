@@ -6,7 +6,7 @@ import CandidateCard from '../components/CandidateCard';
 import VotedCandidateCard from '../components/VotedCandidateCard';
 import { detectIncognito } from "detectincognitojs";
 
-const Home = () => {
+const Home = ({passphrase, userID}) => {
   const [candidates, setCandidates] = useState([
     { id: 1, costume: 'Vampiro', name: 'Juan Pérez', votes: 0 },
     { id: 2, costume: 'Bruja del Bosque', name: 'Ana Gómez', votes: 0 },
@@ -18,12 +18,9 @@ const Home = () => {
     { id: 8, costume: 'Fantasma de la Ópera', name: 'Sofía González', votes: 0 },
     { id: 9, costume: 'Faraón Momia', name: 'Daniel Rodríguez', votes: 0 }
   ]);
-  //const [candidates, setCandidates] = useState([]);
   const [isIncognito, setIncognito] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(0)
-  const [userID, setUserID] = useState(null);
   const [vote, setVote] = useState(0)
-
   const apiURL = "http://localhost:8080/api/"
 
   useEffect(() => {
@@ -40,12 +37,6 @@ const Home = () => {
       .catch(error => {
         console.error('error', error);
       });
-  }, []);
-
-  useEffect(() => {
-    // Extract the userID from the URL path
-    const pathParts = window.location.pathname.split('/');
-    setUserID(Number(pathParts[pathParts.length - 1]));
   }, []);
 
   useEffect(() => {
@@ -105,10 +96,10 @@ const Home = () => {
   return (
     <Container>
       <Header />
-      <Container>
+      <Container>{passphrase}
         <VotedCandidateCard costume={selectedCandidate.costume} />
       </Container>
-      <Grid container spacing={4}>
+      <Grid spacing={4}>
         {candidates.map(candidate => (
           <CandidateCard
             key={candidate.id}
