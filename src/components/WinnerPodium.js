@@ -1,12 +1,14 @@
 import WinnerPodiumStep from './WinnerPodiumStep';
 
 function WinnerPodium({ winners }) {
-    winners[0].position = 1
-    for (let i = 1; i < winners.length; i++) {
-        if (winners[i].votes_count === winners[i - 1].votes_count) {
-            winners[i].position = winners[i - 1].position
-        } else {
-            winners[i].position = (winners[i - 1].position + 1)
+    if(winners.length){
+        winners[0].position = 1
+        for (let i = 1; i < winners.length; i++) {
+            if (winners[i].votes_count === winners[i - 1].votes_count) {
+                winners[i].position = winners[i - 1].position
+            } else {
+                winners[i].position = (winners[i - 1].position + 1)
+            }
         }
     }
     return (

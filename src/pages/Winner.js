@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Stack } from '@mui/material';
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
@@ -8,7 +8,20 @@ import WinnerPodium from '../components/WinnerPodium';
 
 function Winner() {
     const { width, height } = useWindowSize()
-    const mockWinners = [{ "costume": "control remoto", "name": "pa", "votes_count": 3, "data": [{ "user": "guchi", "message": "good" }, { "user": "tute", "message": "good" }] }, { "costume": "panda", "name": "maga", "votes_count": 2, "data": [{ "user": "ma", "message": "good" }] }, { "costume": "panda grande", "name": "guchi", "votes_count": 1, "data": [{ "user": "maga" }] }]
+    const [winners,setWinners] = useState([]);
+
+    async function getWinners() {
+        try{
+            const win = await (await fetch('http://localhost:8080/api/results/winners')).json()
+            setWinners(win)
+        }
+        catch (e){
+            console.log(e)
+        }
+    }
+    useEffect(() => getWinners, []);
+
+    
 
     return (
         <div className="App">
@@ -23,7 +36,7 @@ function Winner() {
                     spacing={0}
                 >
                     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-                        <WinnerPodium winners={mockWinners.sort((a, b) => b.votes_count - a.votes_count)} />
+                        <WinnerPodium winners={winners.sort((a, b) => b.votes_count - a.votes_count)} />
                     </div>
                 </Stack>
                 <Confetti
