@@ -43,7 +43,6 @@ const Home = ({passphrase, userID}) => {
     if (vote) {
       setVote(vote)
       const votedCandidate = candidates.find(candidate => candidate.id === vote);
-      console.log("candidate voted 2: ", votedCandidate);
     if (votedCandidate) {
       // Set the selected candidate state
       setSelectedCandidate(votedCandidate);
@@ -60,6 +59,31 @@ const Home = ({passphrase, userID}) => {
     checkIncognito()
   }, [])
 
+  async function persistVote(id, message) {
+    const req = new Object()
+    req.message = message
+    req.user_costume_id = id 
+
+    console.log("request to vote: ", req)
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+          'User': passphrase,
+      },
+      body: JSON.stringify(req)
+  };
+
+  console.log("options request: ", requestOptions)
+  try {
+      const userData = await (await fetch(apiURL + "votes", requestOptions)).json()
+      console.log("userdata: ", userData);
+      return
+  }
+  catch (e) {
+      console.log(e);
+  }
+  }
 
   const handleVote = (id, comment) => {
     if (id === userID) {
@@ -83,6 +107,7 @@ const Home = ({passphrase, userID}) => {
     if (votedCandidate) {
       // Set the selected candidate state
       setSelectedCandidate(votedCandidate);
+      persistVote(id, comment)
       alert(`votaste a ${id} ${comment}`)
     }
   };
@@ -99,7 +124,7 @@ const Home = ({passphrase, userID}) => {
   return (
     <Container>
       <Header />
-      <Container>{passphrase}
+      <Container>
         <VotedCandidateCard costume={selectedCandidate.costume} />
       </Container>
       <Grid spacing={4}>

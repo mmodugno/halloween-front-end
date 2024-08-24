@@ -20,7 +20,7 @@ function App() {
     localStorage.setItem('halloween-passphrase', JSON.stringify(passphrase));
   }, [passphrase]);
 
-  if (passphrase) return (<Home userID={userID}/>)
+  if (passphrase) return (<Home passphrase={passphrase} userID={userID}/>)
   return (
     <div className="App" >
       <Splash setPassphrase={setPassphrase} setUserID={setUserID}/>
