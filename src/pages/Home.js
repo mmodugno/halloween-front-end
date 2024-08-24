@@ -4,7 +4,6 @@ import Grid from '@mui/material/Grid';
 import Header from '../components/Header';
 import CandidateCard from '../components/CandidateCard';
 import VotedCandidateCard from '../components/VotedCandidateCard';
-import { detectIncognito } from "detectincognitojs";
 
 const Home = ({passphrase, userID}) => {
   const [candidates, setCandidates] = useState([
@@ -18,7 +17,6 @@ const Home = ({passphrase, userID}) => {
     { id: 8, costume: 'Fantasma de la Ópera', name: 'Sofía González', votes: 0 },
     { id: 9, costume: 'Faraón Momia', name: 'Daniel Rodríguez', votes: 0 }
   ]);
-  const [isIncognito, setIncognito] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(0)
   const [vote, setVote] = useState(0)
   const apiURL = "http://localhost:8080/api/"
@@ -50,14 +48,6 @@ const Home = ({passphrase, userID}) => {
     }
     }
   },  [candidates]);
-
-  useEffect(() => {
-    async function checkIncognito() {
-      const isIncognito = await detectIncognito()
-      setIncognito(isIncognito.isPrivate)
-    }
-    checkIncognito()
-  }, [])
 
   async function persistVote(id, message) {
     const req = new Object()
@@ -98,15 +88,6 @@ const Home = ({passphrase, userID}) => {
     }
   };
 
-
-  if (isIncognito) {
-    document.body.style = 'background-color:#2f2c36;';
-    return (
-      <div class="shall-not-pass">
-        <img src={require('../assets/not-pass.gif')} alt="you can't pass" />
-      </div>
-    )
-  }
   return (
     <Container>
       <Header />
