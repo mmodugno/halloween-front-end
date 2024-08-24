@@ -10,14 +10,13 @@ function App() {
   const [isIncognito, setIncognito] = useState(false);
   const [passphrase, setPassphrase] = useState('')
   const [userID, setUserID] = useState(0)
+  const [voteFinished, setVoteFinished] = useState(false)
 
-  useEffect(() => {
-    async function checkIncognito() {
-      const isIncognito = await detectIncognito()
-      setIncognito(isIncognito.isPrivate)
-    }
-    checkIncognito()
-  }, [])
+  useEffect(() =>
+  (async function () {
+    const isIncognito = await detectIncognito()
+    setIncognito(isIncognito.isPrivate)
+  }), [])
 
   useEffect(() => {
     const pw = JSON.parse(localStorage.getItem('halloween-passphrase'));
@@ -32,6 +31,10 @@ function App() {
     localStorage.setItem('halloween-passphrase', JSON.stringify(passphrase));
   }, [passphrase]);
 
+  useEffect(() => {
+    if (passphrase === 'winner') setVoteFinished(true)
+  }, [passphrase])
+
   if (isIncognito) {
     document.body.style = 'background-color:#2f2c36;';
     return (
@@ -41,7 +44,7 @@ function App() {
     )
   }
   // Hack for showing winner
-  if (passphrase === 'winner') return (<Winner />)
+  if (voteFinished) return (<Winner />)
   if (passphrase) return (<Home passphrase={passphrase} userID={userID} />)
   return (
     <div className="App" >
