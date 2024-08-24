@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import Header from '../components/Header';
 import CandidateCard from '../components/CandidateCard';
 import VotedCandidateCard from '../components/VotedCandidateCard';
+import Admin from '../components/Admin';
 
 const Home = ({passphrase, userID}) => {
   const [candidates, setCandidates] = useState([
@@ -94,7 +95,7 @@ const Home = ({passphrase, userID}) => {
       <Container>
         <VotedCandidateCard costume={selectedCandidate.costume} />
       </Container>
-      <Grid spacing={4}>
+      <Grid container spacing={4}>
         {candidates.map(candidate => (
           <CandidateCard
             key={candidate.id}
@@ -108,6 +109,7 @@ const Home = ({passphrase, userID}) => {
           />
         ))}
       </Grid>
+      <Admin />
     </Container>
   );
 };
