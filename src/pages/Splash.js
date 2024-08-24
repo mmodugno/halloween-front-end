@@ -43,7 +43,7 @@ function Splash({ setPassphrase, setUserID }) {
             setWrongPassword(true)
         }
 
-        if (passphraseInput === 'maga') {
+        if (passphraseInput === 'maga' || passphraseInput === 'winner') {
             setUserID(1)
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             localStorage.setItem('halloween-user', JSON.stringify(1));
