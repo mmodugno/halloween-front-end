@@ -64,8 +64,6 @@ const Home = ({passphrase, userID}) => {
     req.message = message
     req.user_costume_id = id 
 
-    console.log("request to vote: ", req)
-
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -73,11 +71,8 @@ const Home = ({passphrase, userID}) => {
       },
       body: JSON.stringify(req)
   };
-
-  console.log("options request: ", requestOptions)
   try {
       const userData = await (await fetch(apiURL + "votes", requestOptions)).json()
-      console.log("userdata: ", userData);
       return
   }
   catch (e) {
@@ -92,18 +87,9 @@ const Home = ({passphrase, userID}) => {
     } 
     localStorage.setItem('halloween-vote', JSON.stringify(id));
     setVote(id)
-    // Update the candidates with the new vote count
-    const updatedCandidates = candidates.map(candidate =>
-      candidate.id === id
-        ? { ...candidate, votes: candidate.votes + 1 }
-        : candidate
-    );
-  
-    // Set the updated candidates state
-    setCandidates(updatedCandidates);
   
     // Find the candidate that was voted for
-    const votedCandidate = updatedCandidates.find(candidate => candidate.id === id);
+    const votedCandidate = candidates.find(candidate => candidate.id === id);
     if (votedCandidate) {
       // Set the selected candidate state
       setSelectedCandidate(votedCandidate);
