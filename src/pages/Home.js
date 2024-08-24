@@ -61,7 +61,11 @@ const Home = ({passphrase, userID}) => {
   }, [])
 
 
-  const handleVote = (id) => {
+  const handleVote = (id, comment) => {
+    if (id === userID) {
+      alert("No podes autovotarte, tené dignidad");
+      return;
+    } 
     localStorage.setItem('halloween-vote', JSON.stringify(id));
     setVote(id)
     // Update the candidates with the new vote count
@@ -79,7 +83,7 @@ const Home = ({passphrase, userID}) => {
     if (votedCandidate) {
       // Set the selected candidate state
       setSelectedCandidate(votedCandidate);
-      console.log("candidate voted: ", votedCandidate);
+      alert(`votaste a ${id} ${comment}`)
     }
   };
 
@@ -102,17 +106,12 @@ const Home = ({passphrase, userID}) => {
         {candidates.map(candidate => (
           <CandidateCard
             key={candidate.id}
+            candidateId={candidate.id}
             name={candidate.name}
             costume={candidate.costume}
             votes={candidate.votes}
             hasVoted={vote !== 0}
-            onVote={() => {
-              if (candidate.id === userID) {
-                alert("No podes autovotarte, tené dignidad");
-              } else {
-                handleVote(candidate.id);
-              }
-            }}
+            onVote={handleVote}
             disableVoteButton={candidate.id === userID} // Disable the button if userId matches candidate.id
           />
         ))}
