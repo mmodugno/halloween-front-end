@@ -46,9 +46,6 @@ const Admin = () => {
             <AccordionDetails>
               <AdminVotes />
             </AccordionDetails>
-            <AccordionActions>
-              <Button variant="contained" endIcon={<RefreshIcon />}>Actualizar</Button>
-            </AccordionActions>
           </Accordion>
         </Box>
       </Stack>
