@@ -56,8 +56,8 @@ function Splash({ setPassphrase, setUserID }) {
     return (
         <Box style={{ height: "100vh", backgroundColor: "#ff4814" }} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
             <Box>
-                <Typography variant="h3" gutterBottom>
-                    Bienvenidos
+                <Typography variant="h3" gutterBottom sx={{fontFamily: 'Halloween'}}>
+                    BIENVENIDOS
                 </Typography>
             </Box>
             <Box onClick={() => ghostClick()}>
@@ -109,7 +109,7 @@ function Splash({ setPassphrase, setUserID }) {
                         inputProps={{style: {textTransform: "lowercase"}}}
                         required
                         value={passphraseInput}
-                        onChange={p => setPassphraseInput(p.target.value.toLowerCase())}
+                        onChange={p => setPassphraseInput(p.target.value)}
                         label="Contraseña"
                     />
                     <Button

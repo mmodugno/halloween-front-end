@@ -29,3 +29,10 @@
     margin: 0 5%;
   }
 }
+
+@font-face {
+  font-family: 'Halloween';
+  src: url('../../fonts/Halloween.ttf') format('truetype'); 
+  font-weight: normal;
+  font-style: normal;
+}

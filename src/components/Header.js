@@ -1,9 +1,12 @@
 import React from 'react';
+import '../styles/Header.css';
 
 const Header = () => {
   return (
     <header>
-      <h1>Votación de Candidatos 🎃</h1>
+      <h1
+      style={{fontFamily: 'Nightmare'}}
+      >Votacion de Candidatos</h1>
     </header>
   );
 };

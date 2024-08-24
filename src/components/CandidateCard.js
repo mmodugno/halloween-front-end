@@ -21,7 +21,12 @@ const CandidateCard = ({
   }
 
   return (
-    <Container>
+    <Container  style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '155px', // Adjust the height as needed
+    }}>
     <Card
       variant="outlined"
       style={{
@@ -29,6 +34,7 @@ const CandidateCard = ({
         color: "#000",
         borderRadius: "18px",
         border: "1px solid #ddd",
+        textAlign: "center"
       }}
     >
       <CardContent>
