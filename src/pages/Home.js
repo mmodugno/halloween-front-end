@@ -60,7 +60,7 @@ const Home = ({passphrase, userID}) => {
   }, [])
 
   async function persistVote(id, message) {
-    const req = new Object()
+    const req = {}
     req.message = message
     req.user_costume_id = id 
 
@@ -72,7 +72,7 @@ const Home = ({passphrase, userID}) => {
       body: JSON.stringify(req)
   };
   try {
-      const userData = await (await fetch(apiURL + "votes", requestOptions)).json()
+      await (await fetch(apiURL + "votes", requestOptions)).json()
       return
   }
   catch (e) {
