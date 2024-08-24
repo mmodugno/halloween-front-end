@@ -106,6 +106,7 @@ function Splash({ setPassphrase, setUserID }) {
             <Box>
                 <ButtonGroup variant="contained" aria-label="Basic button group">
                     <TextField
+                        inputProps={{style: {textTransform: "lowercase"}}}
                         required
                         value={passphraseInput}
                         onChange={p => setPassphraseInput(p.target.value)}
