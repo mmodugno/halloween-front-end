@@ -22,9 +22,11 @@ function App() {
   useEffect(() => {
     const pw = JSON.parse(localStorage.getItem('halloween-passphrase'));
     const userID = JSON.parse(localStorage.getItem('halloween-user'));
+    const isAdmin = JSON.parse(localStorage.getItem('halloween-admin'));
     if (pw) {
       setUserID(userID)
       setPassphrase(pw)
+      setIsAdmin(isAdmin)
     }
   }, []);
 
@@ -35,6 +37,7 @@ function App() {
   useEffect(() => {
     if (passphrase === 'winner') setVoteFinished(true)
   }, [passphrase])
+
 
   if (isIncognito) {
     document.body.style = 'background-color:#2f2c36;';

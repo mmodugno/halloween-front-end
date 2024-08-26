@@ -15,8 +15,20 @@ const Admin = () => {
   const [openEndVoteModal, setOpenEndVoteModal] = useState(false);
 
   const endVote = async () => {
+    const requestOptions = {
+      method: 'PUT'
+    };
+    try {
+      await (await fetch(apiURL + "finish", requestOptions)).json()
+      return
+    }
+    catch (e) {
+      console.log(e);
+    }
     alert('finito')
   }
+
+  const apiURL = "http://localhost:8080/api/"
 
   return (
     <Container

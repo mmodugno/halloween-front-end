@@ -35,6 +35,7 @@ function Splash({ setPassphrase, setUserID, setIsAdmin}) {
             setUserID(userData.id)
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             localStorage.setItem('halloween-user', JSON.stringify(passphraseInput));
+            localStorage.setItem('halloween-admin', JSON.stringify(userData.is_admin));
             setPassphrase(passphraseInput)
             console.log("userData: ", userData);
             setIsAdmin(userData.is_admin)
@@ -49,6 +50,7 @@ function Splash({ setPassphrase, setUserID, setIsAdmin}) {
             setUserID(1)
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             localStorage.setItem('halloween-user', JSON.stringify(1));
+            localStorage.setItem('halloween-admin', JSON.stringify(true));
             setPassphrase(passphraseInput)
             setIsAdmin(true)
             
