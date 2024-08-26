@@ -9,7 +9,7 @@ import EasterEgg from '../components/EasterEgg';
 
 import '../styles/Splash.css';
 
-function Splash({ setPassphrase, setUserID }) {
+function Splash({ setPassphrase, setUserID, setIsAdmin}) {
     const [wrongPassword, setWrongPassword] = useState(false)
     const [passphraseInput, setPassphraseInput] = useState('')
     const [ghostClicks, setGhostClicks] = useState(0)
@@ -36,6 +36,8 @@ function Splash({ setPassphrase, setUserID }) {
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             localStorage.setItem('halloween-user', JSON.stringify(passphraseInput));
             setPassphrase(passphraseInput)
+            console.log("userData: ", userData);
+            setIsAdmin(userData.is_admin)
             return setWrongPassword(false)
         }
         catch (e) {
@@ -48,6 +50,8 @@ function Splash({ setPassphrase, setUserID }) {
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             localStorage.setItem('halloween-user', JSON.stringify(1));
             setPassphrase(passphraseInput)
+            setIsAdmin(true)
+            
             return setWrongPassword(false)
         }
         setWrongPassword(true)

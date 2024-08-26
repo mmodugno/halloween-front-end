@@ -11,6 +11,7 @@ function App() {
   const [passphrase, setPassphrase] = useState('')
   const [userID, setUserID] = useState(0)
   const [voteFinished, setVoteFinished] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() =>
   (async function () {
@@ -45,10 +46,10 @@ function App() {
   }
   // Hack for showing winner
   if (voteFinished) return (<Winner />)
-  if (passphrase) return (<Home passphrase={passphrase} userID={userID} />)
+  if (passphrase) return (<Home passphrase={passphrase} userID={userID} isAdmin={isAdmin}/>)
   return (
     <div className="App" >
-      <Splash setPassphrase={setPassphrase} setUserID={setUserID} />
+      <Splash setPassphrase={setPassphrase} setUserID={setUserID} setIsAdmin={setIsAdmin}/>
     </div>
   );
 }

@@ -6,7 +6,8 @@ import CandidateCard from '../components/CandidateCard';
 import VotedCandidateCard from '../components/VotedCandidateCard';
 import Admin from '../components/Admin';
 
-const Home = ({passphrase, userID}) => {
+const Home = ({passphrase, userID, isAdmin}) => {
+
   const [candidates, setCandidates] = useState([
     { id: 1, costume: 'Vampiro', name: 'Juan Pérez', votes: 0 },
     { id: 2, costume: 'Bruja del Bosque', name: 'Ana Gómez', votes: 0 },
@@ -109,7 +110,7 @@ const Home = ({passphrase, userID}) => {
           />
         ))}
       </Grid>
-      <Admin />
+      {isAdmin ? <Admin /> : ""} 
     </Container>
   );
 };
