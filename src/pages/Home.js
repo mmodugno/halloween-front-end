@@ -97,10 +97,11 @@ const Home = ({passphrase, userID, isAdmin}) => {
         <VotedCandidateCard costume={selectedCandidate.costume} />
       </Container>
       <Grid container spacing={4} sx={{marginBottom: "1rem"}}>
-        {candidates.map(candidate => (
+        {candidates.map((candidate, index) => (
           <Grid item xs={12} md={6} lg={4}>
             <CandidateCard
               key={candidate.id}
+              index={index%4}
               candidateId={candidate.id}
               name={candidate.name}
               costume={candidate.costume}
