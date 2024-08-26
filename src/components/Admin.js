@@ -13,6 +13,7 @@ import AdminVotes from './AdminVotes'
 
 const Admin = () => {
   const [openEndVoteModal, setOpenEndVoteModal] = useState(false);
+  const [voteEnded, setVoteEnded] = useState(false)
 
   const endVote = async () => {
     const requestOptions = {
@@ -20,12 +21,12 @@ const Admin = () => {
     };
     try {
       await (await fetch(apiURL + "finish", requestOptions)).json()
-      return
+      setVoteEnded(true)
     }
     catch (e) {
       console.log(e);
     }
-    alert('finito')
+    setOpenEndVoteModal(false)
   }
 
   const apiURL = "http://localhost:8080/api/"
@@ -38,13 +39,15 @@ const Admin = () => {
       }}
     >
       <Stack spacing={2}>
-        <Box>
+      {!voteEnded ? <Box>
           <Button onClick={() => setOpenEndVoteModal(true)} variant="contained" size="large" color="error">
             Finalizar Votación
           </Button>
         </Box>
+         : ""} 
+
         <Box>
-          <Accordion defaultExpanded>
+          <Accordion defaultExpanded={!voteEnded}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel3-content"

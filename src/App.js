@@ -48,7 +48,7 @@ function App() {
     )
   }
   // Hack for showing winner
-  if (voteFinished) return (<Winner />)
+  if (voteFinished) return (<Winner isAdmin={isAdmin}/>)
   if (passphrase) return (<Home passphrase={passphrase} userID={userID} isAdmin={isAdmin}/>)
   return (
     <div className="App" >

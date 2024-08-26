@@ -4,9 +4,10 @@ import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from 'react-confetti'
 
 
+import Admin from '../components/Admin';
 import WinnerPodium from '../components/WinnerPodium';
 
-function Winner() {
+function Winner({isAdmin}) {
     const { width, height } = useWindowSize()
     const [winners, setWinners] = useState([{ "costume": "control remoto", "name": "pa", "votes_count": 3, "data": [{ "user": "guchi", "message": "good" }, { "user": "tute", "message": "good" }] }, { "costume": "panda", "name": "maga", "votes_count": 2, "data": [{ "user": "ma", "message": "good" }] }, { "costume": "panda grande", "name": "guchi", "votes_count": 1, "data": [{ "user": "maga" }] }]);
 
@@ -46,6 +47,7 @@ function Winner() {
                     colors={["#ec661e","#ff9033","#61146f","#c1405a","#ab1d4f"]}
                 />
             </div>
+            {isAdmin ? <Admin /> : ""} 
         </div>
     );
 }
