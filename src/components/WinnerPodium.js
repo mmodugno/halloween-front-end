@@ -1,7 +1,7 @@
 import WinnerPodiumStep from './WinnerPodiumStep';
 
 function WinnerPodium({ winners }) {
-    if(winners.length){
+    if (winners.length) {
         winners[0].position = 1
         for (let i = 1; i < winners.length; i++) {
             if (winners[i].votes_count === winners[i - 1].votes_count) {

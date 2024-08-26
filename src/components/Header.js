@@ -5,8 +5,10 @@ const Header = () => {
   return (
     <header>
       <h1
-      style={{fontFamily: 'Nightmare', color:'white', fontSize: "3rem", textAlign: 'center', margin: "1rem" }}
-      >MEJOR DISFRAZ</h1>
+        style={{ fontFamily: 'Nightmare', color: 'white', fontSize: "3rem", textAlign: 'center', margin: "1rem" }}
+      >
+        MEJOR DISFRAZ
+      </h1>
     </header>
   );
 };

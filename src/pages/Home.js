@@ -96,7 +96,7 @@ const Home = ({passphrase, userID, isAdmin}) => {
       <Container>
         <VotedCandidateCard costume={selectedCandidate.costume} />
       </Container>
-      <Grid container spacing={4}>
+      <Grid container spacing={4} sx={{marginBottom: "1rem"}}>
         {candidates.map(candidate => (
           <Grid item xs={12} md={6} lg={4}>
             <CandidateCard

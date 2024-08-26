@@ -23,7 +23,7 @@ const CandidateCard = ({
   }
 
   const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#ff9033',
+    backgroundColor: '#ec661e',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',

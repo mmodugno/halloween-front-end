@@ -33,12 +33,13 @@ function WinnerPodiumStep({ winner, position }) {
           style={{
             width: '5rem',
             placeContent: 'left',
-            display: 'inline-flex'
+            display: 'inline-flex',
+            color: "white"
           }}
         >
           {winner.name}
         </span>
-        
+
       </motion.div>
 
       <motion.div

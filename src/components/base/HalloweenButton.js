@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
 const ColorButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.getContrastText("#61146f"),
+    color: "#cfb8d3",
     backgroundColor: "#61146f",
     '&:hover': {
         backgroundColor: "#571263",
