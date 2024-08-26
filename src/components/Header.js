@@ -5,8 +5,8 @@ const Header = () => {
   return (
     <header>
       <h1
-      style={{fontFamily: 'Nightmare'}}
-      >Votacion de Candidatos</h1>
+      style={{fontFamily: 'Nightmare', color:'white' }}
+      >MEJOR DISFRAZ</h1>
     </header>
   );
 };

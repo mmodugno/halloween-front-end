@@ -8,7 +8,7 @@ import WinnerPodium from '../components/WinnerPodium';
 
 function Winner() {
     const { width, height } = useWindowSize()
-    const [winners,setWinners] = useState([]);
+    const [winners,setWinners] = useState([{ "costume": "control remoto", "name": "pa", "votes_count": 3, "data": [{ "user": "guchi", "message": "good" }, { "user": "tute", "message": "good" }] }, { "costume": "panda", "name": "maga", "votes_count": 2, "data": [{ "user": "ma", "message": "good" }] }, { "costume": "panda grande", "name": "guchi", "votes_count": 1, "data": [{ "user": "maga" }] }]);
 
     async function getWinners() {
         try{

@@ -113,7 +113,7 @@ function Splash({ setPassphrase, setUserID, setIsAdmin}) {
                         inputProps={{style: {textTransform: "lowercase"}}}
                         required
                         value={passphraseInput}
-                        onChange={p => setPassphraseInput(p.target.value)}
+                        onChange={p => setPassphraseInput(p.target.value.toLowerCase())}
                         label="Contraseña"
                     />
                     <Button

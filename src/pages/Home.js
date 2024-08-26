@@ -43,43 +43,43 @@ const Home = ({passphrase, userID, isAdmin}) => {
     if (vote) {
       setVote(vote)
       const votedCandidate = candidates.find(candidate => candidate.id === vote);
-    if (votedCandidate) {
-      // Set the selected candidate state
-      setSelectedCandidate(votedCandidate);
-      console.log("candidate voted: ", votedCandidate);
+      if (votedCandidate) {
+        // Set the selected candidate state
+        setSelectedCandidate(votedCandidate);
+        console.log("candidate voted: ", votedCandidate);
+      }
     }
-    }
-  },  [candidates]);
+  }, [candidates]);
 
   async function persistVote(id, message) {
     const req = {}
     req.message = message
-    req.user_costume_id = id 
+    req.user_costume_id = id
 
     const requestOptions = {
       method: 'POST',
       headers: {
-          'User': passphrase,
+        'User': passphrase,
       },
       body: JSON.stringify(req)
-  };
-  try {
+    };
+    try {
       await (await fetch(apiURL + "votes", requestOptions)).json()
       return
-  }
-  catch (e) {
+    }
+    catch (e) {
       console.log(e);
-  }
+    }
   }
 
   const handleVote = (id, comment) => {
     if (id === userID) {
       alert("No podes autovotarte, tené dignidad");
       return;
-    } 
+    }
     localStorage.setItem('halloween-vote', JSON.stringify(id));
     setVote(id)
-  
+
     // Find the candidate that was voted for
     const votedCandidate = candidates.find(candidate => candidate.id === id);
     if (votedCandidate) {
@@ -98,16 +98,18 @@ const Home = ({passphrase, userID, isAdmin}) => {
       </Container>
       <Grid container spacing={4}>
         {candidates.map(candidate => (
-          <CandidateCard
-            key={candidate.id}
-            candidateId={candidate.id}
-            name={candidate.name}
-            costume={candidate.costume}
-            votes={candidate.votes}
-            hasVoted={vote !== 0}
-            onVote={handleVote}
-            disableVoteButton={candidate.id === userID} // Disable the button if userId matches candidate.id
-          />
+          <Grid item xs={12} md={6} lg={4}>
+            <CandidateCard
+              key={candidate.id}
+              candidateId={candidate.id}
+              name={candidate.name}
+              costume={candidate.costume}
+              votes={candidate.votes}
+              hasVoted={vote !== 0}
+              onVote={handleVote}
+              disableVoteButton={candidate.id === userID} // Disable the button if userId matches candidate.id
+            />
+          </Grid>
         ))}
       </Grid>
       {isAdmin ? <Admin /> : ""} 

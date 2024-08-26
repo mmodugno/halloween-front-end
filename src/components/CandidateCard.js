@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import Container from "@mui/material/Container";
-import CardContent from "@mui/material/CardContent";
+// import Button from "@mui/material/Button";
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+
 import CandidateCardModal from "./CandidateCardModal"
+import HalloweenButton from "./base/HalloweenButton";
 
 const CandidateCard = ({
   candidateId,
@@ -20,34 +22,35 @@ const CandidateCard = ({
     onVote(candidateId, comment)
   }
 
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: '#ff9033',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
+
   return (
-    <Container  style={{
+    <Item style={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       height: '155px', // Adjust the height as needed
     }}>
-    <Card
-      variant="outlined"
-      style={{
-        backgroundColor: "#f5f5f5",
-        color: "#000",
-        borderRadius: "18px",
-        border: "1px solid #ddd",
-        textAlign: "center"
-      }}
-    >
-      <CardContent>
+      <Stack 
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"      
+      >
         <Typography variant="h6" component="div" gutterBottom style={{ fontWeight: 'bold' }}>
           {costume}
         </Typography>
         <Typography variant="body2" color="textSecondary">
           {name}
         </Typography>
-        <Button
+        <HalloweenButton
           variant="contained"
           disabled={hasVoted || disableVoteButton}
-          // onClick={onVote}
           onClick={() => setOpenModal(true)}
           style={{
             marginTop: '10px',
@@ -56,16 +59,15 @@ const CandidateCard = ({
           }}
         >
           {disableVoteButton ? "No seas tramposo" : "Votar"}
-        </Button>
-      </CardContent>
-    </Card>
-    <CandidateCardModal 
-      openModal={openModal}
-      setOpenModal={setOpenModal}
-      costume={costume}
-      submitVote={submitVote}
-    ></CandidateCardModal>
-    </Container>
+        </HalloweenButton>
+      </Stack>
+      <CandidateCardModal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        costume={costume}
+        submitVote={submitVote}
+      ></CandidateCardModal>
+    </Item>
   );
 };
 
