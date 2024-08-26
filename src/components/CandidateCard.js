@@ -37,26 +37,26 @@ const CandidateCard = ({
       alignItems: 'center',
       height: '155px', // Adjust the height as needed
     }}>
-      <Stack 
+      <Stack
         spacing={2}
         justifyContent="center"
-        alignItems="center"      
+        alignItems="center"
       >
-        <Typography variant="h6" component="div" gutterBottom style={{ fontWeight: 'bold' }}>
+        <Typography component="div" gutterBottom
+          sx={{ fontSize: "1.7rem", fontWeight: "bold", color: "black", lineHeight: "1.7rem" }}
+        >
           {costume}
         </Typography>
-        <Typography variant="body2" color="textSecondary">
+        <Typography
+          sx={{ fontSize: "1.2rem", color: "black", lineHeight: "1.7rem" }}
+        >
           {name}
         </Typography>
         <HalloweenButton
           variant="contained"
           disabled={hasVoted || disableVoteButton}
           onClick={() => setOpenModal(true)}
-          style={{
-            marginTop: '10px',
-            color: "white",
-            cursor: disableVoteButton ? "not-allowed" : "pointer",
-          }}
+          style={{ cursor: disableVoteButton ? "not-allowed" : "pointer", }}
         >
           {disableVoteButton ? "No seas tramposo" : "Votar"}
         </HalloweenButton>

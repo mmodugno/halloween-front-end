@@ -60,7 +60,7 @@ function Splash({ setPassphrase, setUserID, setIsAdmin}) {
     }
 
     return (
-        <Box style={{ height: "100vh", backgroundColor: "#ff4814" }} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
+        <Box style={{ height: "100vh", backgroundColor: "#ec661e" }} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
             <Box>
                 <Typography variant="h3" gutterBottom sx={{fontFamily: 'Halloween'}}>
                     BIENVENIDOS
@@ -106,7 +106,7 @@ function Splash({ setPassphrase, setUserID, setIsAdmin}) {
                 <p className="shadowFrame"><svg version="1.1" className="shadow" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="61px" y="20px"
                     width="122.436px" height="39.744px" viewBox="0 0 122.436 39.744" enableBackground="new 0 0 122.436 39.744"
                     xmlSpace="preserve">
-                    <ellipse fill="#EF3D23" cx="61.128" cy="19.872" rx="49.25" ry="8.916" />
+                    <ellipse fill="#d45b1b" cx="61.128" cy="19.872" rx="49.25" ry="8.916" />
                 </svg></p>
             </Box>
             <Box>
