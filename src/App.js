@@ -34,8 +34,20 @@ function App() {
     localStorage.setItem('halloween-passphrase', JSON.stringify(passphrase));
   }, [passphrase]);
 
+
   useEffect(() => {
-    if (passphrase === 'winner') setVoteFinished(true)
+
+    fetch('http://localhost:8080/api/finish')
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        setVoteFinished(data.Message)
+      });
+
+    if (passphrase === 'winner') {
+      setVoteFinished(true)
+    }
   }, [passphrase])
 
 
