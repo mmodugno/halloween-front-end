@@ -1,11 +1,9 @@
 import React from 'react';
 
 const VotedCandidateCard = ({ costume }) => {
-
-  //console.log(costume)
   if (costume) return (
-    <div className="candidate-card">
-      <h2>Votaste a: {costume}</h2>
+    <div>
+      <h2 style={{ fontFamily: "Nightmare", fontSize: "2.5rem", color: "white", lineHeight: "1.7rem", marginBottom: "1rem" }}>Votaste a: {costume}</h2>
     </div>
   );
 };

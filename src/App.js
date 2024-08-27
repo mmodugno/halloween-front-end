@@ -36,12 +36,12 @@ function App() {
 
 
   useEffect(() => {
-
     fetch('http://localhost:8080/api/finish')
       .then(response => {
         return response.json();
       })
       .then(data => {
+        console.log("vote finished: ",data.Message);
         setVoteFinished(data.Message)
       });
 
@@ -60,7 +60,7 @@ function App() {
     )
   }
   // Hack for showing winner
-  if (voteFinished) return (<Winner isAdmin={isAdmin}/>)
+  if (voteFinished) return (<Winner isAdmin={isAdmin} voteFinished={voteFinished}/>)
   if (passphrase) return (<Home passphrase={passphrase} userID={userID} isAdmin={isAdmin}/>)
   return (
     <div className="App" >

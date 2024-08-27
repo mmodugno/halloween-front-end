@@ -11,7 +11,7 @@ import AdminEndVote from './AdminEndVote'
 import AdminVotes from './AdminVotes'
 
 
-const Admin = () => {
+const Admin = (voteFinished) => {
   const [openEndVoteModal, setOpenEndVoteModal] = useState(false);
   const [voteEnded, setVoteEnded] = useState(false)
 
@@ -39,7 +39,7 @@ const Admin = () => {
       }}
     >
       <Stack spacing={2}>
-      {!voteEnded ? <Box>
+      {!voteEnded || !voteFinished ? <Box>
           <Button onClick={() => setOpenEndVoteModal(true)} variant="contained" size="large" color="error">
             Finalizar Votación
           </Button>
