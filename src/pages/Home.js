@@ -7,6 +7,7 @@ import VotedCandidateCard from '../components/VotedCandidateCard';
 import Admin from '../components/Admin';
 
 const Home = ({passphrase, userID, isAdmin}) => {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const [candidates, setCandidates] = useState([
     { id: 1, costume: 'Vampiro', name: 'Juan Pérez', votes: 0 },
@@ -21,13 +22,12 @@ const Home = ({passphrase, userID, isAdmin}) => {
   ]);
   const [selectedCandidate, setSelectedCandidate] = useState(0)
   const [vote, setVote] = useState(0)
-  const apiURL = "http://localhost:8080/api/"
 
   useEffect(() => {
-    fetch(apiURL + "users")
+    fetch(backendUrl + "/users")
       .then(response => {
         if (!response.ok) {
-          //throw new Error('Error getting candidates');
+          throw new Error('Error getting candidates');
         }
         return response.json();
       })
@@ -46,7 +46,6 @@ const Home = ({passphrase, userID, isAdmin}) => {
       if (votedCandidate) {
         // Set the selected candidate state
         setSelectedCandidate(votedCandidate);
-        console.log("candidate voted: ", votedCandidate);
       }
     }
   }, [candidates]);
@@ -64,11 +63,23 @@ const Home = ({passphrase, userID, isAdmin}) => {
       body: JSON.stringify(req)
     };
     try {
-      await (await fetch(apiURL + "votes", requestOptions)).json()
-      return
+      const response = await fetch(backendUrl + "/votes", requestOptions);
+      if (!response.ok) {
+        // If response status is not OK, throw an error
+        const errorMessage = await response.text(); // Get error message from response
+        throw new Error(errorMessage);
+      }
+    JSON.parse(localStorage.setItem('halloween-vote', id));
     }
     catch (e) {
-      console.log(e);
+      // Check if the error message contains "has already voted"
+      if (e.message.includes("has already voted")) {
+        console.log("The user has already voted.");
+        // Optionally, you can show a user-friendly message in the UI
+        alert("You have already voted.");
+      } else {
+        console.error("Error:", e.message);
+      }
     }
   }
 
@@ -86,7 +97,6 @@ const Home = ({passphrase, userID, isAdmin}) => {
       // Set the selected candidate state
       setSelectedCandidate(votedCandidate);
       persistVote(id, comment)
-      alert(`votaste a ${id} ${comment}`)
     }
   };
 

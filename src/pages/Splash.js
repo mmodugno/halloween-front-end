@@ -11,6 +11,7 @@ import Ghost from '../components/SplashGhost'
 import '../styles/Splash.css';
 
 function Splash({ setPassphrase, setUserID, setIsAdmin }) {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const [wrongPassword, setWrongPassword] = useState(false)
     const [passphraseInput, setPassphraseInput] = useState('')
 
@@ -22,14 +23,14 @@ function Splash({ setPassphrase, setUserID, setIsAdmin }) {
             },
         };
         try {
-            const userData = await (await fetch('http://localhost:8080/api/users/login', requestLogInOptions)).json()
+            const userData = await (await fetch(backendUrl + '/users/login', requestLogInOptions)).json()
             setUserID(userData.id)
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             localStorage.setItem('halloween-user', JSON.stringify(userData.id));
             localStorage.setItem('halloween-admin', JSON.stringify(userData.is_admin));
             setPassphrase(passphraseInput)
-            console.log("userData: ", userData);
             setIsAdmin(userData.is_admin)
+
             return setWrongPassword(false)
         }
         catch (e) {

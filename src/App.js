@@ -6,12 +6,16 @@ import Home from './pages/Home';
 import Splash from './pages/Splash';
 import Winner from './pages/Winner';
 
+
 function App() {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+ 
   const [isIncognito, setIncognito] = useState(false);
   const [passphrase, setPassphrase] = useState('')
   const [userID, setUserID] = useState(0)
   const [voteFinished, setVoteFinished] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [hasVoted, setHasVoted] = useState(false)
 
   useEffect(() =>
   (async function () {
@@ -23,10 +27,13 @@ function App() {
     const pw = JSON.parse(localStorage.getItem('halloween-passphrase'));
     const userID = JSON.parse(localStorage.getItem('halloween-user'));
     const isAdmin = JSON.parse(localStorage.getItem('halloween-admin'));
+    const hasVoted = JSON.parse(localStorage.getItem('halloween-vote'));
+
     if (pw) {
       setUserID(userID)
       setPassphrase(pw)
       setIsAdmin(isAdmin)
+      setHasVoted(hasVoted)
     }
   }, []);
 
@@ -36,7 +43,7 @@ function App() {
 
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/finish')
+    fetch(String(backendUrl) + '/finish')
       .then(response => {
         return response.json();
       })
@@ -48,7 +55,7 @@ function App() {
     if (passphrase === 'winner') {
       setVoteFinished(true)
     }
-  }, [passphrase])
+  }, [passphrase, backendUrl])
 
 
   if (isIncognito) {
@@ -59,6 +66,8 @@ function App() {
       </div>
     )
   }
+
+
   // Hack for showing winner
   if (voteFinished) return (<Winner isAdmin={isAdmin} voteFinished={voteFinished}/>)
   if (passphrase) return (<Home passphrase={passphrase} userID={userID} isAdmin={isAdmin}/>)

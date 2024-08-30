@@ -11,10 +11,9 @@ import Button from "@mui/material/Button";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 
-const apiURL = "http://localhost:8080/api/"
-
 export default function AdminVotes() {
-  
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 const [votes, setVotes] = useState([
   { costume: 'calabacin 🎃', name: 'maga', votes_count: 4, data:[
     {user: 'guchi', message: 'se parece a longlegs'},
@@ -31,7 +30,7 @@ useEffect(() => {
 
 async function loadVotes() {
   try {
-      const res = await (await fetch(apiURL + "results")).json()
+      const res = await (await fetch(backendUrl + "/results")).json()
       setVotes(res)
       return
   }
