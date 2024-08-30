@@ -9,7 +9,7 @@ import Spiderweb from '../assets/spiderweb.png';
 import Spiderwalk from '../assets/spider-walk.gif'; 
 import Bat from '../assets/bats.gif'; 
 import Boogeyman from '../assets/boogeyman.gif'; 
-import Ghost from '../assets/ghost.gif'; 
+import Ghost from '../assets/ghost-purple.gif';
 
 import CandidateCardModal from "./CandidateCardModal"
 import HalloweenButton from "./base/HalloweenButton";

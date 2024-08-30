@@ -5,6 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import HalloweenButton from './base/HalloweenButton';
 
 export default function CandidateCardModal({ openModal, setOpenModal, submitVote, costume }) {
 
@@ -28,8 +29,8 @@ export default function CandidateCardModal({ openModal, setOpenModal, submitVote
           },
         }}
       >
-        <DialogTitle>Votar a {costume}</DialogTitle>
-        <DialogContent>
+        <DialogTitle sx={{backgroundColor: 'black',color:'orange'}}>Votar a {costume}</DialogTitle>
+        <DialogContent sx={{backgroundColor: 'black'}}>
           <TextField
             autoFocus
             multiline
@@ -39,11 +40,16 @@ export default function CandidateCardModal({ openModal, setOpenModal, submitVote
             label="Comentario [Opcional]"
             fullWidth
             variant="standard"
+            color="warning"
+            InputLabelProps={{
+              style: { color: 'orange' },
+            }}
+            inputProps={{ style: { color: "#cfb8d3" } }}
+
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
-          <Button type="submit">Votar</Button>
+        <DialogActions sx={{backgroundColor: 'black'}}>
+          <HalloweenButton type="submit">Votar</HalloweenButton>
         </DialogActions>
       </Dialog>
     </React.Fragment>
