@@ -25,7 +25,7 @@ function Splash({ setPassphrase, setUserID, setIsAdmin }) {
             const userData = await (await fetch('http://localhost:8080/api/users/login', requestLogInOptions)).json()
             setUserID(userData.id)
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
-            localStorage.setItem('halloween-user', JSON.stringify(passphraseInput));
+            localStorage.setItem('halloween-user', JSON.stringify(userData.id));
             localStorage.setItem('halloween-admin', JSON.stringify(userData.is_admin));
             setPassphrase(passphraseInput)
             console.log("userData: ", userData);
