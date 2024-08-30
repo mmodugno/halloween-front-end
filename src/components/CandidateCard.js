@@ -14,7 +14,7 @@ import Ghost from '../assets/ghost-purple.gif';
 import CandidateCardModal from "./CandidateCardModal"
 import HalloweenButton from "./base/HalloweenButton";
 
-const backgroundImages = [Spiderwalk, Bat, Boogeyman, Ghost]
+const backgroundImages = [Spiderwalk, Ghost, Bat, Boogeyman]
 
 const CandidateCard = ({
   candidateId,
