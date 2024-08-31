@@ -12,6 +12,7 @@ import AdminVotes from './AdminVotes'
 
 
 const Admin = (voteFinished) => {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const [openEndVoteModal, setOpenEndVoteModal] = useState(false);
   const [voteEnded, setVoteEnded] = useState(false)
 
@@ -20,7 +21,7 @@ const Admin = (voteFinished) => {
       method: 'PUT'
     };
     try {
-      await (await fetch(apiURL + "finish", requestOptions)).json()
+      await (await fetch(backendUrl + "/finish", requestOptions)).json()
       setVoteEnded(true)
     }
     catch (e) {
@@ -28,8 +29,6 @@ const Admin = (voteFinished) => {
     }
     setOpenEndVoteModal(false)
   }
-
-  const apiURL = "http://localhost:8080/api/"
 
   return (
     <Container
