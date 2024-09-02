@@ -5,6 +5,7 @@ import { detectIncognito } from "detectincognitojs";
 import Home from './pages/Home';
 import Splash from './pages/Splash';
 import Winner from './pages/Winner';
+import Lobby from './pages/Lobby';
 
 
 function App() {
@@ -65,6 +66,10 @@ function App() {
         <img src={require('./assets/not-pass.gif')} alt="you can't pass" />
       </div>
     )
+  }
+
+  if(true) {
+    return <Lobby />;
   }
 
 
