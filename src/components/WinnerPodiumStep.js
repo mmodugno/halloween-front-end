@@ -58,8 +58,8 @@ function WinnerPodiumStep({ winner, position }) {
         animate="visible"
         variants={{
           visible: {
-            height: 200,
-            opacity: 1,
+            height: 100 + 50 * (1 + 1 / winner.position) - (winner.position - 1) * 50,
+            opacity: 1/winner.position + 0.2,
             transition: {
               delay: 1 + offset,
               duration: 2,
