@@ -42,7 +42,7 @@ export default function CandidateCardModal({
             margin="dense"
             id="comment"
             name="comment"
-            label="Motivo del voto"
+            label="Dejale un mensajito"
             fullWidth
             variant="standard"
             color="warning"

@@ -6,6 +6,7 @@ import Confetti from 'react-confetti'
 
 import Admin from '../components/Admin';
 import WinnerPodium from '../components/WinnerPodium';
+import CandidateVotes from '../components/CandidatesVotes';
 
 function Winner({isAdmin, voteFinished}) {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -48,7 +49,7 @@ function Winner({isAdmin, voteFinished}) {
                     colors={["#ec661e","#ff9033","#61146f","#c1405a","#ab1d4f"]}
                 />
             </div>
-            {isAdmin ? <Admin voteFinished={voteFinished}/> : ""} 
+            {isAdmin ? <Admin voteFinished={voteFinished}/> : <CandidateVotes/>} 
         </div>
     );
 }

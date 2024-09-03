@@ -32,7 +32,8 @@ function WinnerPodium({ winners }) {
                     alignContent: 'flex-end',
                     alignItems: 'flex-end',
                     borderBottom: '1px solid #e5e7eb',
-                    height: 250
+                    height: 250,
+                    paddingBottom: '30px'
                 }}
             >
                 {winners.map((winner, index) => (
