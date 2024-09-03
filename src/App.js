@@ -17,6 +17,7 @@ function App() {
   const [voteFinished, setVoteFinished] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [hasVoted, setHasVoted] = useState(false)
+  const [isStarted, setIsStarted] = useState(false)
 
   useEffect(() =>
   (async function () {
@@ -58,6 +59,18 @@ function App() {
     }
   }, [passphrase, backendUrl])
 
+  useEffect(() => {
+    fetch(String(backendUrl) + '/start')
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        if(data.Message){
+          setIsStarted(data.Message)
+        }
+      });
+  }, [backendUrl])
+
 
   if (isIncognito) {
     document.body.style = 'background-color:#2f2c36;';
@@ -68,18 +81,21 @@ function App() {
     )
   }
 
-  if(true) {
-    return <Lobby />;
-  }
-
-
   // Hack for showing winner
-  if (voteFinished) return (<Winner isAdmin={isAdmin} voteFinished={voteFinished}/>)
-  if (passphrase) return (<Home passphrase={passphrase} userID={userID} isAdmin={isAdmin}/>)
-  return (
+
+  if (!passphrase) return (
     <div className="App" >
-      <Splash setPassphrase={setPassphrase} setUserID={setUserID} setIsAdmin={setIsAdmin}/>
-    </div>
+    <Splash setPassphrase={setPassphrase} setUserID={setUserID} setIsAdmin={setIsAdmin}/>
+  </div>
+  );
+
+  console.log("is started: ", isStarted);
+  
+  if (!isStarted) return (<Lobby isAdmin={isAdmin} />);
+  if (voteFinished) return (<Winner isAdmin={isAdmin} voteFinished={voteFinished}/>);
+
+  return (
+    <Home passphrase={passphrase} userID={userID} isAdmin={isAdmin}/>
   );
 }
 
