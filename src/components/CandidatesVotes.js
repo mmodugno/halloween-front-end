@@ -39,16 +39,16 @@ async function loadVotes() {
   }
   
   return (
-
+    votes.length>0 ?
 <Container
       spacing={2}
-      sx={{
-        bgcolor: '#000000',
-      }}
     >
       <Stack spacing={2}>
               <Box>
-          <Accordion>
+          <Accordion  
+          sx={{
+            bgcolor: '#ee9362',
+          }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel3-content"
@@ -60,23 +60,19 @@ async function loadVotes() {
             <TableContainer 
     component={Paper}
     >
-      <Table sx={{ minWidth: 350 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-          <TableCell sx={{fontWeight: "bold" }}>Nombre</TableCell>
-          <TableCell sx={{fontWeight: "bold" }}>Mensaje</TableCell>
-          </TableRow>
-        </TableHead>
+      <Table sx={{ minWidth: 350, bgcolor: "#eeb79a"}} aria-label="simple table">
         <TableBody>
-          {votes.map((row) => (
+          {votes
+          .filter((row) => row.message && row.message.trim() !== "")
+          .map((row) => (
             <TableRow
               key={row.user}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
-                {row.user}
-              </TableCell>
-              <TableCell>{row.message}</TableCell>
+              <TableCell sx={{
+              borderBottom: "1px solid #ee9362", 
+            }}
+            >{row.message}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -87,10 +83,6 @@ async function loadVotes() {
         </Box>
       </Stack>
     </Container>
-
-
-
-
-    
+    : <Container></Container>
   );
 }
