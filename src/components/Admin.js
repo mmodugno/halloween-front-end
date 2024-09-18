@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
@@ -11,7 +11,7 @@ import AdminEndVote from './AdminEndVote'
 import AdminVotes from './AdminVotes'
 
 
-const Admin = (voteFinished) => {
+const Admin = () => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const [openEndVoteModal, setOpenEndVoteModal] = useState(false);
   const [voteEnded, setVoteEnded] = useState(false)
@@ -30,6 +30,17 @@ const Admin = (voteFinished) => {
     setOpenEndVoteModal(false)
   }
 
+  useEffect(() => {
+    fetch(String(backendUrl) + '/finish')
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        setVoteEnded(data.Message)
+      });
+
+  }, [backendUrl])
+
   return (
     <Container
       spacing={2}
@@ -38,7 +49,8 @@ const Admin = (voteFinished) => {
       }}
     >
       <Stack spacing={2}>
-      {!voteEnded || !voteFinished ? <Box>
+      {!voteEnded ? 
+      <Box>
           <Button onClick={() => setOpenEndVoteModal(true)} variant="contained" size="large" color="error">
             Finalizar Votación
           </Button>

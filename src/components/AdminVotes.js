@@ -6,9 +6,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { TableFooter } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Container, TableFooter } from "@mui/material";
+import HalloweenButton from "./base/HalloweenButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { Padding } from "@mui/icons-material";
+import { px } from "framer-motion";
 
 
 export default function AdminVotes() {
@@ -40,6 +42,7 @@ async function loadVotes() {
   }
   
   return (
+    <Container>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -75,18 +78,16 @@ async function loadVotes() {
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <Button
-              variant="contained"
-              onClick={loadVotes}
-              endIcon={<RefreshIcon />}
-            >
-              Actualizar
-            </Button>
-          </TableRow>
-        </TableFooter>
       </Table>
     </TableContainer>
+    <HalloweenButton
+        variant="contained"
+        onClick={loadVotes}
+        sx={{ marginTop: '10px' }}
+        endIcon={<RefreshIcon />}
+        >
+          Actualizar
+    </HalloweenButton>
+    </Container>
   );
 }
