@@ -5,6 +5,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import HalloweenButton from "./base/HalloweenButton";
+import { useState } from "react";
 
 export default function CandidateCardModal({
   openModal,
@@ -15,6 +16,8 @@ export default function CandidateCardModal({
   const handleClose = () => {
     setOpenModal(false);
   };
+
+  const [inputErr, setInputErr] = useState(false)
 
   return (
     <React.Fragment>
@@ -27,6 +30,12 @@ export default function CandidateCardModal({
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
+            
+            if (!formJson.comment || formJson.comment.trim() === "") {
+              setInputErr(true)
+              return; // Prevent the form from submitting
+            }
+            setInputErr(false)
             submitVote(formJson.comment);
             handleClose();
           },
@@ -50,6 +59,8 @@ export default function CandidateCardModal({
               style: { color: "orange" },
             }}
             inputProps={{ style: { color: "#cfb8d3" } }}
+            error={inputErr}
+            helperText={inputErr ? "Dejá un mensajito te dije": ""}
           />
         </DialogContent>
         <DialogActions sx={{ backgroundColor: "black" }}>

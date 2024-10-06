@@ -19,33 +19,63 @@ export default function CandidateVotes() {
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 const userID = JSON.parse(localStorage.getItem('halloween-user'));
 const [votes, setVotes] = useState([])
+const [phrase, setPhrase] = useState("")
 
 
 useEffect(() => {
   loadVotes()
 }, []);
 
+useEffect(() => {
+  setPhrase(pickPhrase());  
+}, []);
+
+
 async function loadVotes() {
   try {
       const res = await (await fetch(backendUrl + "/results/" + userID)).json()
       setVotes(res)
       console.log(res);
-      
       return
   }
   catch (e) {
       console.log(e);
+      setVotes([])
   }
+  }
+
+  function pickPhrase() {
+    const phrases = [
+      "Tranqui! Capaz no te votaron porque todavía están tratando de entender qué sos...",
+      "Bueno, che, parece que te disfrazaste del hombre invisible.",
+      "Que la sigan chupando viejo.",
+      "Te juro que ni se dieron cuenta que estabas disfrazado.",
+      "¿Estabas disfrazado de fantasma o qué?",
+      "Capaz que te confundieron con la decoración... ¡un disfraz demasiado realista!",
+      "No te votó ni tu mamá, che.",
+      "Capaz tu disfraz es tan avanzado que los demás no están listos para entenderlo.",
+      "Capaz la gente tiene mal gusto, pero el tuyo es peor",
+      "Bueno, ya sabes de qué no disfrazarte la próxima fiesta."
+    ];
+    const randomIndex = Math.floor(Math.random() * phrases.length);
+    return phrases[randomIndex];
   }
   
   return (
-    votes.length>0 ?
+    (votes | votes.length>0) ?
 <Container
       spacing={2}
     >
       <Stack spacing={2}>
+        <Box>
+        <h4
+        style={{ color: 'white', fontSize: "1.5rem", textAlign: 'center', margin: "1rem" }}
+      >
+        Tus votos: {votes.length}
+      </h4>
+        </Box>
               <Box>
-          <Accordion  
+          <Accordion  defaultExpanded={true}
           sx={{
             bgcolor: '#ee9362',
           }}>
@@ -61,7 +91,7 @@ async function loadVotes() {
     component={Paper}
     >
       <Table sx={{ minWidth: 350, bgcolor: "#eeb79a"}} aria-label="simple table">
-        <TableBody>
+        <TableBody> 
           {votes
           .filter((row) => row.message && row.message.trim() !== "")
           .map((row) => (
@@ -83,6 +113,22 @@ async function loadVotes() {
         </Box>
       </Stack>
     </Container>
-    : <Container></Container>
+    : <Container>
+        <Box>
+      <h4
+        style={{ color: 'white', fontSize: "1.5rem", textAlign: 'center', margin: "1rem" }}
+      >
+        No tenés votos 😢
+      </h4>
+      </Box>
+      <Box >
+        <p style={{ color: 'white', fontSize: "1rem", textAlign: 'center', margin: "1rem" }}>
+        {
+          pickPhrase()
+        }
+        </p>
+        
+      </Box>
+    </Container>
   );
 }

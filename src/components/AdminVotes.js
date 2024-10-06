@@ -6,24 +6,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Container, TableFooter } from "@mui/material";
+import { Box, Container, TableFooter } from "@mui/material";
 import HalloweenButton from "./base/HalloweenButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Padding } from "@mui/icons-material";
-import { px } from "framer-motion";
 
 
-export default function AdminVotes() {
+export default function AdminVotes({ totalCandidates }) {
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
-const [votes, setVotes] = useState([
-  { costume: 'calabacin 🎃', name: 'maga', votes_count: 4, data:[
-    {user: 'guchi', message: 'se parece a longlegs'},
-    {user: 'tute', message: 'aguante river no me importa nada'},
-  ] },
-  { costume: 'panda 🐼', name: 'guchi', votes_count: 2, data:[{user: 'ma', message: 'asqueroso la verdad'}] },
-  { costume: 'videla', name: 'pa', votes_count: 1, data:[{user: 'maga', message: 'buen falcon 🚗'}] },
-])
+const [votes, setVotes] = useState([])
+const [totalVotes, setTotalVotes]= useState(0)
 
 
 useEffect(() => {
@@ -34,6 +26,7 @@ async function loadVotes() {
   try {
       const res = await (await fetch(backendUrl + "/results")).json()
       setVotes(res)
+      setTotalVotes(res.reduce((acc, row) => acc + row.votes_count, 0))
       return
   }
   catch (e) {
@@ -43,6 +36,9 @@ async function loadVotes() {
   
   return (
     <Container>
+      <Box 
+      sx={{color: '#571263', marginBottom: '10px', fontWeight: 'bold'}}
+      >Votos hasta ahora: {totalVotes} / {totalCandidates}</Box>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>

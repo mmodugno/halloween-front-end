@@ -9,32 +9,7 @@ import Admin from "../components/Admin";
 const Home = ({ passphrase, userID, isAdmin }) => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
-  const [candidates, setCandidates] = useState([
-    { id: 1, costume: "Vampiro", name: "Juan Pérez", votes: 0 },
-    { id: 2, costume: "Bruja del Bosque", name: "Ana Gómez", votes: 0 },
-    { id: 3, costume: "Pirata Zombi", name: "Miguel Hernández", votes: 0 },
-    { id: 4, costume: "Novia Fantasma", name: "María López", votes: 0 },
-    { id: 5, costume: "Científico Loco", name: "Roberto Fernández", votes: 0 },
-    {
-      id: 6,
-      costume: "Monstruo de Frankenstein",
-      name: "Laura Martínez",
-      votes: 0,
-    },
-    {
-      id: 7,
-      costume: "Cazador de Hombres Lobo",
-      name: "David Ramírez",
-      votes: 0,
-    },
-    {
-      id: 8,
-      costume: "Fantasma de la Ópera",
-      name: "Sofía González",
-      votes: 0,
-    },
-    { id: 9, costume: "Faraón Momia", name: "Daniel Rodríguez", votes: 0 },
-  ]);
+  const [candidates, setCandidates] = useState([]);
   const [selectedCandidate, setSelectedCandidate] = useState(0);
   const [vote, setVote] = useState(0);
 
@@ -138,7 +113,7 @@ const Home = ({ passphrase, userID, isAdmin }) => {
           </Grid>
         ))}
       </Grid>
-      {isAdmin ? <Admin /> : ""}
+      {isAdmin ? <Admin totalCandidates={candidates.length}/> : ""}
     </Container>
   );
 };

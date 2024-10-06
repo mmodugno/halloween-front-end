@@ -11,7 +11,7 @@ import AdminEndVote from './AdminEndVote'
 import AdminVotes from './AdminVotes'
 
 
-const Admin = () => {
+const Admin = ({ totalCandidates }) => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const [openEndVoteModal, setOpenEndVoteModal] = useState(false);
   const [voteEnded, setVoteEnded] = useState(false)
@@ -67,7 +67,7 @@ const Admin = () => {
               Votos
             </AccordionSummary>
             <AccordionDetails>
-              <AdminVotes />
+              <AdminVotes totalCandidates={totalCandidates}/>
             </AccordionDetails>
           </Accordion>
         </Box>

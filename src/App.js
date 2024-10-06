@@ -81,8 +81,7 @@ function App() {
     )
   }
 
-  // Hack for showing winner
-
+  //Hack for showing winner
   if (!passphrase) return (
     <div className="App" >
     <Splash setPassphrase={setPassphrase} setUserID={setUserID} setIsAdmin={setIsAdmin}/>
