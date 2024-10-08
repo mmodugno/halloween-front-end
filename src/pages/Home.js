@@ -101,6 +101,18 @@ const Home = ({ passphrase, userID, isAdmin }) => {
     <Container>
       <Header />
       <Container>
+        <h2 style={{
+          fontSize: "1.5rem",
+          color: "white",
+          lineHeight: "1rem",
+          marginBottom: "0.5rem",
+          textAlign: "center",
+          position: "relative",
+          top: "-10px",
+          fontFamily: "cursive" 
+        }}>
+          Podes votar hasta 2 disfraces
+        </h2>
         {selectedCandidates.map((candidate, index) => (
           <VotedCandidateCard key={index} costume={candidate.costume} />
         ))}
