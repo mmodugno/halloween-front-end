@@ -22,7 +22,7 @@ function WinnerPodiumStep({ winner, position }) {
           visible: {
             opacity: 1,
             transition: {
-              delay: 1 + (offset + 2),
+              delay: 0.1,
               duration: 0.75
             }
           },
@@ -49,7 +49,6 @@ function WinnerPodiumStep({ winner, position }) {
           display: 'flex',
           borderTopLeftRadius: '.5rem',
           borderTopRightRadius: '.5rem',
-          // borderColor: 'rgba(190,24,93,1)',
           backgroundColor: '#ff4814',
           marginBottom: -1,
           filter: `opacity(${0.1 + winner.votes_count / 3})`
@@ -59,10 +58,10 @@ function WinnerPodiumStep({ winner, position }) {
         variants={{
           visible: {
             height: 100 + 50 * (1 + 1 / winner.position) - (winner.position - 1) * 50,
-            opacity: 1/winner.position + 0.2,
+            opacity: 1/winner.position + 0.3,
             transition: {
               delay: 1 + offset,
-              duration: 2,
+              duration: 1.5,
               ease: 'backInOut'
             }
           },

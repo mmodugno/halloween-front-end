@@ -3,7 +3,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Accordion from '@mui/material/Accordion';
@@ -47,15 +46,15 @@ async function loadVotes() {
   function pickPhrase() {
     const phrases = [
       "Tranqui! Capaz no te votaron porque todavía están tratando de entender qué sos...",
-      "Bueno, che, parece que te disfrazaste del hombre invisible.",
+      "Bueno che, parece que te disfrazaste del hombre invisible.",
       "Que la sigan chupando viejo.",
       "Te juro que ni se dieron cuenta que estabas disfrazado.",
       "¿Estabas disfrazado de fantasma o qué?",
-      "Capaz que te confundieron con la decoración... ¡un disfraz demasiado realista!",
+      "Capaz que te confundieron con la decoración...",
       "No te votó ni tu mamá, che.",
       "Capaz tu disfraz es tan avanzado que los demás no están listos para entenderlo.",
-      "Capaz la gente tiene mal gusto, pero el tuyo es peor",
-      "Bueno, ya sabes de qué no disfrazarte la próxima fiesta."
+      "Capaz la gente tiene mal gusto, pero el tuyo es peor.",
+      "Bueno, ya sabes de qué NO disfrazarte la próxima fiesta."
     ];
     const randomIndex = Math.floor(Math.random() * phrases.length);
     return phrases[randomIndex];
