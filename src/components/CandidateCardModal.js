@@ -60,7 +60,7 @@ export default function CandidateCardModal({
             }}
             inputProps={{ style: { color: "#cfb8d3" } }}
             error={inputErr}
-            helperText={inputErr ? "Dejá un mensajito te dije": ""}
+            helperText={inputErr ? "Deja un mensajito te dije": ""}
           />
         </DialogContent>
         <DialogActions sx={{ backgroundColor: "black" }}>

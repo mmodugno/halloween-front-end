@@ -16,7 +16,6 @@ function App() {
   const [userID, setUserID] = useState(0)
   const [voteFinished, setVoteFinished] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [hasVoted, setHasVoted] = useState(false)
   const [isStarted, setIsStarted] = useState(false)
 
   useEffect(() =>
@@ -29,13 +28,11 @@ function App() {
     const pw = JSON.parse(localStorage.getItem('halloween-passphrase'));
     const userID = JSON.parse(localStorage.getItem('halloween-user'));
     const isAdmin = JSON.parse(localStorage.getItem('halloween-admin'));
-    const hasVoted = JSON.parse(localStorage.getItem('halloween-vote'));
 
     if (pw) {
       setUserID(userID)
       setPassphrase(pw)
       setIsAdmin(isAdmin)
-      setHasVoted(hasVoted)
     }
   }, []);
 
@@ -87,8 +84,6 @@ function App() {
     <Splash setPassphrase={setPassphrase} setUserID={setUserID} setIsAdmin={setIsAdmin}/>
   </div>
   );
-
-  console.log("is started: ", isStarted);
   
   if (!isStarted) return (<Lobby isAdmin={isAdmin} />);
   if (voteFinished) return (<Winner isAdmin={isAdmin} voteFinished={voteFinished}/>);
