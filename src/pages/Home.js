@@ -27,6 +27,7 @@ const Home = ({ passphrase, userID, isAdmin }) => {
 
   useEffect(() => {
     const votes = JSON.parse(localStorage.getItem("halloween-votes")) || [];
+  
     if (votes.length !== 0) {
 
       // Find all voted candidates based on the votes array
@@ -83,6 +84,8 @@ const Home = ({ passphrase, userID, isAdmin }) => {
     if (!votes.includes(id)) {
       votes.push(id);
       localStorage.setItem("halloween-votes", JSON.stringify(votes));
+      const pending_votes = JSON.parse(localStorage.getItem("halloween-pending-votes")) || 0;
+      localStorage.setItem("halloween-pending-votes", JSON.stringify(pending_votes-1))
     }
 
     // Find the candidate that was voted for
@@ -121,7 +124,7 @@ const Home = ({ passphrase, userID, isAdmin }) => {
         {candidates.map((candidate, index) => {
           // Retrieve existing votes from localStorage
           const votes = JSON.parse(localStorage.getItem("halloween-votes")) || [];
-
+          const pending_votes = JSON.parse(localStorage.getItem("halloween-pending-votes")) || 0;
           return (
             <Grid item xs={12} md={6} lg={4} key={candidate.id}>
               <CandidateCard
@@ -130,7 +133,7 @@ const Home = ({ passphrase, userID, isAdmin }) => {
                 name={candidate.name}
                 costume={candidate.costume}
                 votes={candidate.votes}
-                hasVoted={selectedCandidates.length === 2}
+                hasVoted={pending_votes === 0}
                 onVote={handleVote}
                 disableVoteButton={candidate.id === userID || votes.includes(candidate.id)} // Disable the button if userId matches candidate.id
               />

@@ -28,9 +28,9 @@ function Splash({ setPassphrase, setUserID, setIsAdmin }) {
             localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
             localStorage.setItem('halloween-user', JSON.stringify(userData.id));
             localStorage.setItem('halloween-admin', JSON.stringify(userData.is_admin));
+            localStorage.setItem('halloween-pending-votes', JSON.stringify(userData.pending_votes));
             setPassphrase(passphraseInput)
             setIsAdmin(userData.is_admin)
-
             return setWrongPassword(false)
         }
         catch (e) {
