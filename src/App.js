@@ -14,6 +14,7 @@ import Splash from "./pages/Splash";
 import Winner from "./pages/Winner";
 import Lobby from "./pages/Lobby";
 import Incognito from "./pages/Incognito";
+import AdminPage from "./pages/AdminPage";
 
 const POLL_MS = 5000;
 
@@ -23,6 +24,7 @@ const MASCOT_PLACE = {
   lobby: "hero",
   home: "header",
   winner: "header",
+  admin: "header",
 };
 
 const screenMotion = {
@@ -36,6 +38,7 @@ function App() {
   const [isIncognito, setIncognito] = useState(false);
   const [game, setGame] = useState({ started: false, finished: false });
   const [easterEgg, setEasterEgg] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   const ghostClicks = useRef(0);
 
   useEffect(() => {
@@ -68,6 +71,7 @@ function App() {
   const logout = () => {
     clearSession();
     setSession(null);
+    setAdminOpen(false);
   };
 
   const onGhostClick = () => {
@@ -81,16 +85,19 @@ function App() {
   let screen;
   if (isIncognito) screen = "incognito";
   else if (!session) screen = "splash";
+  else if (adminOpen && session.isAdmin) screen = "admin";
   else if (game.finished) screen = "winner";
   else if (!game.started) screen = "lobby";
   else screen = "home";
 
+  const openAdmin = session?.isAdmin ? () => setAdminOpen(true) : undefined;
   const pages = {
     incognito: <Incognito />,
     splash: <Splash onLogin={login} />,
-    lobby: <Lobby isAdmin={session?.isAdmin} onGameChange={setGame} />,
-    home: <Home session={session} onLogout={logout} game={game} onGameChange={setGame} />,
-    winner: <Winner session={session} game={game} onGameChange={setGame} />,
+    lobby: <Lobby session={session} onGameChange={setGame} onOpenAdmin={openAdmin} />,
+    home: <Home session={session} onLogout={logout} onOpenAdmin={openAdmin} />,
+    winner: <Winner session={session} onOpenAdmin={openAdmin} />,
+    admin: <AdminPage session={session} game={game} onGameChange={setGame} onClose={() => setAdminOpen(false)} />,
   };
 
   return (

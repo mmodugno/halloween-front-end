@@ -32,3 +32,13 @@ test("sprites are rectangular and every pixel has a color", () => {
   }
 });
 
+
+test("parseGuestList accepts commas, dashes, tabs and names alone", () => {
+  const { parseGuestList } = require("./components/admin/GuestsTab");
+  expect(parseGuestList("Lu, Bruja del bosque\nTomi - Zombie\n\nSai\nDei\tVampira", 2)).toEqual([
+    { name: "Lu", costume: "Bruja del bosque", pending_votes: 2, is_admin: false },
+    { name: "Tomi", costume: "Zombie", pending_votes: 2, is_admin: false },
+    { name: "Sai", costume: "", pending_votes: 2, is_admin: false },
+    { name: "Dei", costume: "Vampira", pending_votes: 2, is_admin: false },
+  ]);
+});

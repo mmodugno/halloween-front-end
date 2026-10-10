@@ -8,7 +8,6 @@ import { heart } from "../components/pixel/sprites";
 import Toast, { useToast } from "../components/pixel/Toast";
 import CandidateRow from "../components/CandidateRow";
 import VoteSheet from "../components/VoteSheet";
-import Admin from "../components/Admin";
 import DialogBox from "../components/pixel/DialogBox";
 import { play } from "../sound";
 import LiveFeed, { LatestMessage } from "../components/LiveFeed";
@@ -30,8 +29,8 @@ function VoteMeter({ left, used }) {
   );
 }
 
-const Home = ({ session, onLogout, game, onGameChange }) => {
-  const { passphrase, userID, isAdmin } = session;
+const Home = ({ session, onLogout, onOpenAdmin }) => {
+  const { passphrase, userID } = session;
   const [candidates, setCandidates] = useState([]);
   const [votedIds, setVotedIds] = useState(() => loadVotedIds(userID));
   const [pendingVotes, setPendingVotes] = useState(null);
@@ -115,6 +114,14 @@ const Home = ({ session, onLogout, game, onGameChange }) => {
         <h1>Mejor disfraz</h1>
       </header>
 
+      {onOpenAdmin && (
+        <div className="admin-link">
+          <button type="button" className="btn btn--quiet" onClick={onOpenAdmin}>
+            Abrir panel de admin
+          </button>
+        </div>
+      )}
+
       {loaded && (
         <div className="vote-status">
           <span>Tus votos</span>
@@ -144,7 +151,6 @@ const Home = ({ session, onLogout, game, onGameChange }) => {
 
       <LiveFeed items={feed} />
 
-      {isAdmin && <Admin game={game} onGameChange={onGameChange} />}
 
       <div style={{ textAlign: "center" }}>
         <button type="button" className="link" onClick={onLogout}>

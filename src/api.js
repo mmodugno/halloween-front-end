@@ -28,12 +28,23 @@ const api = {
     }),
   undoVote: (passphrase, candidateId) => request(`/votes/${candidateId}`, { method: "DELETE", passphrase }),
   feed: () => request("/feed"),
-  results: () => request("/results"),
   winners: () => request("/results/winners"),
-  messages: (userID) => request(`/results/${userID}`),
+  // Votes and messages a user received (only that user or an admin can read them).
+  messages: (passphrase, userID) => request(`/results/${userID}`, { passphrase }),
   // { started, finished }
   game: () => request("/game"),
-  setGame: (state) => request("/game", { method: "PUT", body: state }),
 };
+
+// Admin only: every call sends the admin's pass code.
+export const adminApi = (passphrase) => ({
+  setGame: (state) => request("/game", { method: "PUT", passphrase, body: state }),
+  results: () => request("/results", { passphrase }),
+  users: () => request("/admin/users", { passphrase }),
+  createUsers: (users) => request("/users/batch", { method: "POST", passphrase, body: users }).then((r) => r.Users),
+  updateUser: (user) => request(`/admin/users/${user.id}`, { method: "PUT", passphrase, body: user }),
+  deleteUser: (id) => request(`/admin/users/${id}`, { method: "DELETE", passphrase }),
+  resetVotes: (votesPerUser) =>
+    request("/admin/votes/reset", { method: "POST", passphrase, body: { votes_per_user: votesPerUser } }),
+});
 
 export default api;

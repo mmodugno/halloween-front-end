@@ -3,7 +3,6 @@ import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 
 import api from "../api";
-import Admin from "../components/Admin";
 import WinnerPodium from "../components/WinnerPodium";
 import MyVotes from "../components/MyVotes";
 import DialogBox from "../components/pixel/DialogBox";
@@ -12,7 +11,7 @@ import { play } from "../sound";
 const CONFETTI_COLORS = ["#f2a65a", "#ffe8c2", "#a8e0c8", "#e58fa0", "#8a78ab"];
 const drawPixel = (ctx) => ctx.fillRect(-4, -4, 8, 8);
 
-function Winner({ session, game, onGameChange }) {
+function Winner({ session, onOpenAdmin }) {
   const { width, height } = useWindowSize();
   const [winners, setWinners] = useState(null);
   const [celebrate, setCelebrate] = useState(false);
@@ -43,6 +42,14 @@ function Winner({ session, game, onGameChange }) {
         <h1>Ganadores</h1>
       </header>
 
+      {onOpenAdmin && (
+        <div className="admin-link">
+          <button type="button" className="btn btn--quiet" onClick={onOpenAdmin}>
+            Abrir panel de admin
+          </button>
+        </div>
+      )}
+
       {winners && (
         <DialogBox
           lines={winners.length ? ["La votación terminó.", "Y los mejores disfraces de la noche son..."] : ["La votación terminó.", "Nadie votó, así que no hay podio esta vez."]}
@@ -50,7 +57,7 @@ function Winner({ session, game, onGameChange }) {
       )}
       {winners?.length > 0 && <WinnerPodium winners={winners} />}
 
-      {session.isAdmin ? <Admin game={game} onGameChange={onGameChange} /> : <MyVotes userID={session.userID} />}
+      <MyVotes session={session} />
 
       {celebrate && (
         <Confetti

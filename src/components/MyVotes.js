@@ -21,19 +21,20 @@ const list = { hidden: {}, show: { transition: { staggerChildren: 0.12, delayChi
 const item = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { duration: 0.45 } } };
 
 // Shows a (non admin) user the votes and messages they received.
-export default function MyVotes({ userID }) {
+export default function MyVotes({ session }) {
+  const { passphrase, userID } = session;
   const [votes, setVotes] = useState(null);
   const [phrase] = useState(pickPhrase);
 
   useEffect(() => {
     api
-      .messages(userID)
+      .messages(passphrase, userID)
       .then(setVotes)
       .catch((e) => {
         console.error(e);
         setVotes([]);
       });
-  }, [userID]);
+  }, [passphrase, userID]);
 
   if (votes === null) return null;
 
