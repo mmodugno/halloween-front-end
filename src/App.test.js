@@ -32,10 +32,3 @@ test("sprites are rectangular and every pixel has a color", () => {
   }
 });
 
-test("timeAgo reads naturally", () => {
-  const { timeAgo } = require("./components/LiveFeed");
-  const now = new Date("2026-10-31T23:00:00Z").getTime();
-  expect(timeAgo("2026-10-31T22:59:40Z", now)).toBe("recién");
-  expect(timeAgo("2026-10-31T22:45:00Z", now)).toBe("hace 15 min");
-  expect(timeAgo("2026-10-31T21:30:00Z", now)).toBe("hace 1 hora");
-});

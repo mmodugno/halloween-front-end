@@ -10,7 +10,7 @@ import MyVotes from "../components/MyVotes";
 const CONFETTI_COLORS = ["#f2a65a", "#ffe8c2", "#a8e0c8", "#e58fa0", "#8a78ab"];
 const drawPixel = (ctx) => ctx.fillRect(-4, -4, 8, 8);
 
-function Winner({ session }) {
+function Winner({ session, game, onGameChange }) {
   const { width, height } = useWindowSize();
   const [winners, setWinners] = useState(null);
   const [celebrate, setCelebrate] = useState(false);
@@ -41,7 +41,7 @@ function Winner({ session }) {
       {winners && winners.length === 0 && <p className="muted">Nadie votó, así que no hay podio esta vez.</p>}
       {winners?.length > 0 && <WinnerPodium winners={winners} />}
 
-      {session.isAdmin ? <Admin /> : <MyVotes userID={session.userID} />}
+      {session.isAdmin ? <Admin game={game} onGameChange={onGameChange} /> : <MyVotes userID={session.userID} />}
 
       {celebrate && (
         <Confetti

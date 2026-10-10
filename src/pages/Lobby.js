@@ -3,14 +3,13 @@ import api from "../api";
 import PixelSprite from "../components/pixel/PixelSprite";
 import { pumpkin } from "../components/pixel/sprites";
 
-const Lobby = ({ isAdmin, onStarted }) => {
+const Lobby = ({ isAdmin, onGameChange }) => {
   const [starting, setStarting] = useState(false);
 
   const start = async () => {
     setStarting(true);
     try {
-      await api.start();
-      onStarted();
+      onGameChange(await api.setGame({ started: true, finished: false }));
     } catch (e) {
       console.error(e);
       setStarting(false);

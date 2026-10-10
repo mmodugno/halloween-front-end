@@ -32,8 +32,7 @@ const screenMotion = {
 function App() {
   const [session, setSession] = useState(loadSession);
   const [isIncognito, setIncognito] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
-  const [voteFinished, setVoteFinished] = useState(false);
+  const [game, setGame] = useState({ started: false, finished: false });
   const [easterEgg, setEasterEgg] = useState(false);
   const ghostClicks = useRef(0);
 
@@ -43,18 +42,14 @@ function App() {
       .catch(console.error);
   }, []);
 
-  // Keep the game state fresh so everyone moves on when the admin opens or
-  // closes the vote, without reloading.
+  // Keep the game state fresh so every phone follows the admin (waiting,
+  // voting open, winners) without reloading.
   useEffect(() => {
-    if (voteFinished) return;
-    const refresh = () => {
-      api.isStarted().then(setIsStarted).catch(console.error);
-      api.isFinished().then(setVoteFinished).catch(console.error);
-    };
+    const refresh = () => api.game().then(setGame).catch(console.error);
     refresh();
     const id = setInterval(refresh, POLL_MS);
     return () => clearInterval(id);
-  }, [voteFinished]);
+  }, []);
 
   const login = (newSession) => {
     saveSession(newSession);
@@ -77,16 +72,16 @@ function App() {
   let screen;
   if (isIncognito) screen = "incognito";
   else if (!session) screen = "splash";
-  else if (!isStarted && !voteFinished) screen = "lobby";
-  else if (voteFinished) screen = "winner";
+  else if (game.finished) screen = "winner";
+  else if (!game.started) screen = "lobby";
   else screen = "home";
 
   const pages = {
     incognito: <Incognito />,
     splash: <Splash onLogin={login} />,
-    lobby: <Lobby isAdmin={session?.isAdmin} onStarted={() => setIsStarted(true)} />,
-    home: <Home session={session} onLogout={logout} onFinished={() => setVoteFinished(true)} />,
-    winner: <Winner session={session} />,
+    lobby: <Lobby isAdmin={session?.isAdmin} onGameChange={setGame} />,
+    home: <Home session={session} onLogout={logout} game={game} onGameChange={setGame} />,
+    winner: <Winner session={session} game={game} onGameChange={setGame} />,
   };
 
   return (

@@ -28,7 +28,7 @@ function VoteMeter({ left, used }) {
   );
 }
 
-const Home = ({ session, onLogout, onFinished }) => {
+const Home = ({ session, onLogout, game, onGameChange }) => {
   const { passphrase, userID, isAdmin } = session;
   const [candidates, setCandidates] = useState([]);
   const [votedIds, setVotedIds] = useState(() => loadVotedIds(userID));
@@ -71,7 +71,6 @@ const Home = ({ session, onLogout, onFinished }) => {
     }
     updateVotedIds((ids) => ids.filter((id) => id !== candidate.id));
     setPendingVotes((n) => n + 1);
-    loadFeed();
     showToast(`Deshiciste el voto a ${candidate.costume}`);
   };
 
@@ -89,7 +88,6 @@ const Home = ({ session, onLogout, onFinished }) => {
     updateVotedIds((ids) => [...ids, candidate.id]);
     setPendingVotes((n) => Math.max(n - 1, 0));
     setVoting(null);
-    loadFeed();
     showToast(`Votaste a ${candidate.costume}`, {
       tone: "success",
       action: { label: "Deshacer", onClick: () => undo(candidate) },
@@ -148,7 +146,7 @@ const Home = ({ session, onLogout, onFinished }) => {
 
       <LiveFeed items={feed} />
 
-      {isAdmin && <Admin onFinished={onFinished} />}
+      {isAdmin && <Admin game={game} onGameChange={onGameChange} />}
 
       <div style={{ textAlign: "center" }}>
         <button type="button" className="link" onClick={onLogout}>

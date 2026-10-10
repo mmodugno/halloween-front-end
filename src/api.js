@@ -31,10 +31,9 @@ const api = {
   results: () => request("/results"),
   winners: () => request("/results/winners"),
   messages: (userID) => request(`/results/${userID}`),
-  isStarted: () => request("/start").then((d) => d.Message),
-  start: () => request("/start", { method: "PUT" }),
-  isFinished: () => request("/finish").then((d) => d.Message),
-  finish: () => request("/finish", { method: "PUT" }),
+  // { started, finished }
+  game: () => request("/game"),
+  setGame: (state) => request("/game", { method: "PUT", body: state }),
 };
 
 export default api;

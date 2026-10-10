@@ -3,14 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const ease = [0.22, 1, 0.36, 1];
 
-export function timeAgo(date, now = Date.now()) {
-  const minutes = Math.floor((now - new Date(date).getTime()) / 60000);
-  if (minutes < 1) return "recién";
-  if (minutes < 60) return `hace ${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  return hours === 1 ? "hace 1 hora" : `hace ${hours} horas`;
-}
-
 // The newest message, shown near the top. Tapping it jumps to the full board.
 export function LatestMessage({ item }) {
   return (
@@ -40,10 +32,10 @@ export default function LiveFeed({ items }) {
     <section id="mensajes" className="stack" aria-labelledby="feed-title">
       <div className="feed-header">
         <h2 id="feed-title">Mensajes en vivo</h2>
-        <span className="muted feed-header__hint">Anónimos hasta el final</span>
+        <span className="muted feed-header__hint">Llegan unos minutos después del voto, así nadie sabe quién fue</span>
       </div>
       {items.length === 0 ? (
-        <p className="muted">Todavía no hay mensajes. El primer voto estrena el tablero.</p>
+        <p className="muted">Todavía no llegó ningún mensaje. Aparecen acá unos minutos después de cada voto.</p>
       ) : (
         <ul className="bubble-list" aria-live="polite">
           <AnimatePresence initial={false}>
@@ -56,9 +48,7 @@ export default function LiveFeed({ items }) {
                 animate={{ opacity: 1, scale: 1, y: 0, transition: { duration: 0.45, ease } }}
                 exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.25 } }}
               >
-                <p className="bubble__from">
-                  Para {item.costume} <span className="bubble__time">{timeAgo(item.created_at)}</span>
-                </p>
+                <p className="bubble__from">Para {item.costume}</p>
                 <p>{item.message}</p>
               </motion.li>
             ))}
