@@ -6,6 +6,8 @@ import api from "../api";
 import Admin from "../components/Admin";
 import WinnerPodium from "../components/WinnerPodium";
 import MyVotes from "../components/MyVotes";
+import DialogBox from "../components/pixel/DialogBox";
+import { play } from "../sound";
 
 const CONFETTI_COLORS = ["#f2a65a", "#ffe8c2", "#a8e0c8", "#e58fa0", "#8a78ab"];
 const drawPixel = (ctx) => ctx.fillRect(-4, -4, 8, 8);
@@ -28,7 +30,10 @@ function Winner({ session, game, onGameChange }) {
   // Confetti starts once the first place block has risen.
   useEffect(() => {
     if (!winners?.length) return;
-    const id = setTimeout(() => setCelebrate(true), 1800);
+    const id = setTimeout(() => {
+      setCelebrate(true);
+      play("win");
+    }, 1800);
     return () => clearTimeout(id);
   }, [winners]);
 
@@ -38,7 +43,11 @@ function Winner({ session, game, onGameChange }) {
         <h1>Ganadores</h1>
       </header>
 
-      {winners && winners.length === 0 && <p className="muted">Nadie votó, así que no hay podio esta vez.</p>}
+      {winners && (
+        <DialogBox
+          lines={winners.length ? ["La votación terminó.", "Y los mejores disfraces de la noche son..."] : ["La votación terminó.", "Nadie votó, así que no hay podio esta vez."]}
+        />
+      )}
       {winners?.length > 0 && <WinnerPodium winners={winners} />}
 
       {session.isAdmin ? <Admin game={game} onGameChange={onGameChange} /> : <MyVotes userID={session.userID} />}

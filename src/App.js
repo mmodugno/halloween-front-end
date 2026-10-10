@@ -4,7 +4,9 @@ import { detectIncognito } from "detectincognitojs";
 
 import api from "./api";
 import { clearSession, loadSession, saveSession } from "./session";
+import { play } from "./sound";
 import Scene from "./components/pixel/Scene";
+import SoundToggle from "./components/pixel/SoundToggle";
 import Mascot from "./components/pixel/Mascot";
 import EasterEgg from "./components/EasterEgg";
 import Home from "./pages/Home";
@@ -51,6 +53,13 @@ function App() {
     return () => clearInterval(id);
   }, []);
 
+  // Every RPG button makes a small "select" sound.
+  useEffect(() => {
+    const onClick = (e) => e.target.closest?.(".btn:not(:disabled)") && play("select");
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
   const login = (newSession) => {
     saveSession(newSession);
     setSession(newSession);
@@ -88,6 +97,7 @@ function App() {
     <MotionConfig reducedMotion="user">
       <div className="app">
         <Scene />
+        <SoundToggle />
         <Mascot place={MASCOT_PLACE[screen]} onClick={screen === "splash" ? onGhostClick : undefined} />
         <AnimatePresence mode="wait">
           <motion.div key={screen} {...screenMotion}>

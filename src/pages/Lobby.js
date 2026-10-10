@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import api from "../api";
+import DialogBox from "../components/pixel/DialogBox";
 import PixelSprite from "../components/pixel/PixelSprite";
 import { pumpkin } from "../components/pixel/sprites";
+
+const WAITING = ["La votación todavía no abrió.", "Cuando arranque, esta pantalla cambia sola."];
 
 const Lobby = ({ isAdmin, onGameChange }) => {
   const [starting, setStarting] = useState(false);
@@ -18,12 +21,8 @@ const Lobby = ({ isAdmin, onGameChange }) => {
 
   return (
     <main className="screen screen--center" style={{ paddingTop: "calc(14vh + 140px)", justifyContent: "flex-start" }}>
-      <div className="stack" style={{ gap: 8, alignItems: "center" }}>
-        <h1>La votación todavía no abrió</h1>
-        <p className="muted">
-          Cuando arranque, esta pantalla cambia sola<span className="loading-dots" />
-        </p>
-      </div>
+      <h1 className="visually-hidden">La votación todavía no abrió</h1>
+      <DialogBox lines={WAITING} />
       <PixelSprite sprite={pumpkin} scale={8} classes={{ Y: "flicker" }} title="Calabaza" />
       {isAdmin && (
         <button type="button" className="btn" onClick={start} disabled={starting}>

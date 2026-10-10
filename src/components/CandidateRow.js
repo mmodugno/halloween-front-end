@@ -35,7 +35,7 @@ export default function CandidateRow({ candidate, index, isSelf, voted, canVote,
   }
 
   return (
-    <motion.li variants={item} className={`panel candidate ${voted ? "candidate--voted" : ""}`}>
+    <motion.li variants={item} className={`candidate ${voted ? "candidate--voted" : ""}`}>
       <div className="candidate__sprite">
         <PixelSprite sprite={sprite} scale={3} />
       </div>

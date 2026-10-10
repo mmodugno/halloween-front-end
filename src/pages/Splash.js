@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
 import api from "../api";
+import { play } from "../sound";
+import DialogBox from "../components/pixel/DialogBox";
+
+const WELCOME = ["Llegaste a la noche de disfraces.", "Escribí tu contraseña para votar el mejor disfraz."];
 
 function Splash({ onLogin }) {
   const [passphrase, setPassphrase] = useState("");
@@ -12,16 +16,19 @@ function Splash({ onLogin }) {
     e.preventDefault();
     if (!passphrase.trim()) {
       setError("Escribí tu contraseña para entrar.");
+      play("error");
       shake.start({ x: [0, -8, 8, -6, 6, 0], transition: { duration: 0.4 } });
       return;
     }
     setLoading(true);
     try {
       const user = await api.login(passphrase.trim());
+      play("confirm");
       onLogin({ passphrase: passphrase.trim(), userID: user.id, isAdmin: user.is_admin });
     } catch (err) {
       console.error(err);
       setError("Esa contraseña no existe. Revisá la que te pasaron.");
+      play("error");
       shake.start({ x: [0, -8, 8, -6, 6, 0], transition: { duration: 0.4 } });
       setLoading(false);
     }
@@ -29,10 +36,8 @@ function Splash({ onLogin }) {
 
   return (
     <main className="screen screen--center" style={{ paddingTop: "calc(14vh + 140px)", justifyContent: "flex-start" }}>
-      <div className="stack" style={{ gap: 8 }}>
-        <h1 style={{ fontSize: "var(--text-xxl)" }}>Noche de disfraces</h1>
-        <p className="muted">Entrá con tu contraseña para votar el mejor disfraz.</p>
-      </div>
+      <h1 style={{ fontSize: "var(--text-xxl)" }}>Noche de disfraces</h1>
+      <DialogBox lines={WELCOME} />
       <motion.form animate={shake} onSubmit={submit} className="panel stack" style={{ width: "100%", textAlign: "left" }} noValidate>
         <label htmlFor="passphrase">Contraseña</label>
         <input

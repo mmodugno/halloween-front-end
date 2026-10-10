@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sheet from "./pixel/Sheet";
+import DialogBox from "./pixel/DialogBox";
 
 // Asks for a short message and confirms the vote for one candidate.
 export default function VoteSheet({ candidate, onClose, onVote }) {
@@ -28,11 +29,13 @@ export default function VoteSheet({ candidate, onClose, onVote }) {
     <Sheet open={Boolean(candidate)} onClose={onClose} labelledBy="vote-title">
       {candidate && (
         <form className="stack" onSubmit={submit} noValidate>
-          <div>
-            <h2 id="vote-title">Votar a {candidate.costume}</h2>
-            <p className="muted">Disfraz de {candidate.name}</p>
-          </div>
-          <label htmlFor="vote-message">Dejale un mensajito</label>
+          <h2 id="vote-title" className="visually-hidden">
+            Votar a {candidate.costume}
+          </h2>
+          <DialogBox bare lines={[`Vas a votar a ${candidate.costume} (${candidate.name}).`, "¿Qué le querés decir?"]} />
+          <label htmlFor="vote-message" className="visually-hidden">
+            Dejale un mensajito
+          </label>
           <textarea
             id="vote-message"
             className={`input ${error ? "input--error" : ""}`}

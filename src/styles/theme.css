@@ -15,6 +15,9 @@
   --mint-deep: #5f9e87;
   --rose: #e58fa0;
   --rose-deep: #b4596e;
+  --gold: #f7d774;
+  --frame: #f1ecff; /* light frame of the RPG boxes */
+  --box: #150f22; /* dark fill of the RPG boxes */
 
   /* Typography: change these to switch fonts. */
   --font-display: "Pixelify Sans", system-ui, sans-serif;
@@ -157,103 +160,105 @@ h2 {
   height: 120px;
 }
 
-/* ---------- Pixel panel ---------- */
+/* ---------- RPG box ----------
+   Square boxes with a thick light frame on a dark fill, like the dialog
+   boxes of classic RPGs. */
 
 .panel {
   position: relative;
-  margin: var(--px);
   padding: 16px;
-  background: var(--dusk);
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--haze),
-    0 var(--px) 0 0 var(--haze),
-    calc(var(--px) * -1) 0 0 0 var(--haze),
-    var(--px) 0 0 0 var(--haze),
-    inset 0 var(--px) 0 0 rgba(255, 255, 255, 0.05),
-    inset 0 calc(var(--px) * -1) 0 0 rgba(0, 0, 0, 0.12);
+  background: var(--box);
+  border: var(--px) solid var(--frame);
 }
 
 .panel--mint {
-  background: #2f4a4a;
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--mint-deep),
-    0 var(--px) 0 0 var(--mint-deep),
-    calc(var(--px) * -1) 0 0 0 var(--mint-deep),
-    var(--px) 0 0 0 var(--mint-deep);
+  border-color: var(--mint);
 }
 
-/* ---------- Buttons ---------- */
+/* ---------- Buttons ----------
+   Outlined RPG options: they light up in yellow and show a heart cursor
+   when hovered, focused or pressed. */
 
 .btn {
-  --btn-bg: var(--pumpkin);
-  --btn-edge: var(--pumpkin-deep);
-  --btn-fg: var(--night);
+  --btn-color: var(--pumpkin);
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-height: 44px;
-  margin: var(--px) var(--px) calc(var(--px) * 2);
-  padding: 8px 20px;
-  border: 0;
-  background: var(--btn-bg);
-  color: var(--btn-fg);
+  padding: 6px 18px 6px 32px;
+  border: var(--px) solid var(--btn-color);
+  background: var(--box);
+  color: var(--btn-color);
   font: inherit;
   font-weight: var(--weight-strong);
   cursor: pointer;
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--btn-edge),
-    calc(var(--px) * -1) 0 0 0 var(--btn-edge),
-    var(--px) 0 0 0 var(--btn-edge),
-    0 var(--px) 0 0 var(--btn-edge),
-    0 calc(var(--px) * 2) 0 0 rgba(0, 0, 0, 0.25);
   transition:
-    transform 120ms var(--ease-soft),
-    box-shadow 120ms var(--ease-soft),
-    background-color 200ms var(--ease-soft);
+    color 150ms var(--ease-soft),
+    border-color 150ms var(--ease-soft),
+    transform 120ms var(--ease-soft);
 }
 
-.btn:hover {
-  filter: brightness(1.06);
+.btn::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  width: 14px;
+  height: 12px;
+  margin-top: -6px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 6' shape-rendering='crispEdges'%3E%3Cpath fill='%23e58fa0' d='M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 150ms var(--ease-soft);
+}
+
+.btn:hover:not(:disabled),
+.btn:focus-visible,
+.btn:active:not(:disabled) {
+  --btn-color: var(--gold);
+}
+
+.btn:hover:not(:disabled)::before,
+.btn:focus-visible::before,
+.btn:active:not(:disabled)::before {
+  opacity: 1;
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(var(--px));
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--btn-edge),
-    calc(var(--px) * -1) 0 0 0 var(--btn-edge),
-    var(--px) 0 0 0 var(--btn-edge),
-    0 var(--px) 0 0 var(--btn-edge);
+  transform: translateY(2px);
 }
 
 .btn:disabled {
-  --btn-bg: var(--dusk-deep);
-  --btn-edge: var(--haze);
-  --btn-fg: var(--haze-soft);
+  --btn-color: var(--haze);
   cursor: not-allowed;
 }
 
 .btn:focus-visible,
 .input:focus-visible,
 .link:focus-visible {
-  outline: var(--px) solid var(--mint);
-  outline-offset: calc(var(--px) * 2);
+  outline: none;
+}
+
+.input:focus-visible {
+  border-color: var(--gold);
+}
+
+.link:focus-visible {
+  color: var(--gold);
 }
 
 .btn--quiet {
-  --btn-bg: var(--dusk);
-  --btn-edge: var(--haze);
-  --btn-fg: var(--candle);
+  --btn-color: var(--frame);
 }
 
 .btn--danger {
-  --btn-bg: var(--rose);
-  --btn-edge: var(--rose-deep);
+  --btn-color: var(--rose);
 }
 
 .btn--block {
-  width: calc(100% - var(--px) * 2);
+  width: 100%;
 }
 
 .link {
@@ -271,20 +276,13 @@ h2 {
 /* ---------- Inputs ---------- */
 
 .input {
-  width: calc(100% - var(--px) * 2);
-  margin: var(--px);
-  padding: 12px 14px;
-  border: 0;
-  background: var(--dusk-deep);
-  color: var(--candle);
+  width: 100%;
+  padding: 10px 14px;
+  border: var(--px) solid var(--haze-soft);
+  background: var(--night);
+  color: var(--frame);
   font: inherit;
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--haze),
-    0 var(--px) 0 0 var(--haze),
-    calc(var(--px) * -1) 0 0 0 var(--haze),
-    var(--px) 0 0 0 var(--haze),
-    inset 0 var(--px) 0 0 rgba(0, 0, 0, 0.25);
-  transition: box-shadow 200ms var(--ease-soft);
+  transition: border-color 200ms var(--ease-soft);
 }
 
 .input::placeholder {
@@ -292,11 +290,7 @@ h2 {
 }
 
 .input--error {
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--rose),
-    0 var(--px) 0 0 var(--rose),
-    calc(var(--px) * -1) 0 0 0 var(--rose),
-    var(--px) 0 0 0 var(--rose);
+  border-color: var(--rose);
 }
 
 textarea.input {
@@ -307,6 +301,64 @@ textarea.input {
 .field-error {
   color: var(--rose);
   font-size: var(--text-sm);
+}
+
+/* ---------- Dialog box ---------- */
+
+.dialog__line {
+  display: grid;
+  grid-template-columns: 1.2em 1fr;
+}
+
+.dialog__line + .dialog__line {
+  margin-top: 4px;
+}
+
+.dialog__star {
+  padding-top: 0.45em;
+  color: var(--frame);
+  line-height: 1;
+}
+
+.dialog {
+  font-size: var(--text-md);
+  text-align: left;
+}
+
+.dialog__extra {
+  margin-top: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-soft);
+}
+
+.dialog__extra--shown {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Sound toggle ---------- */
+
+.sound-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 15;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: var(--px) solid var(--haze);
+  background: var(--box);
+  color: var(--frame);
+  cursor: pointer;
+}
+
+.sound-toggle:hover,
+.sound-toggle:focus-visible {
+  border-color: var(--gold);
+  color: var(--gold);
+  outline: none;
 }
 
 /* ---------- Sheet (bottom dialog) ---------- */
@@ -424,6 +476,7 @@ textarea.input {
   gap: 12px;
   min-height: 56px;
   padding-left: 56px; /* room for the mascot */
+  padding-right: 56px; /* room for the sound button */
 }
 
 .vote-status {
@@ -431,9 +484,7 @@ textarea.input {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 var(--px);
-  padding: 8px 12px;
-  background: var(--dusk-deep);
+  padding: 0 4px;
   font-weight: var(--weight-strong);
 }
 
@@ -456,27 +507,28 @@ textarea.input {
 
 .candidate-list {
   display: grid;
-  gap: 12px;
   margin: 0;
-  padding: 0;
+  padding: 4px 16px;
   list-style: none;
 }
 
 .candidate {
   display: grid;
-  grid-template-columns: 56px 1fr auto;
+  grid-template-columns: 48px 1fr auto;
   align-items: center;
   gap: 14px;
-  padding: 12px 14px;
-  transition: background-color 400ms var(--ease-soft);
+  padding: 12px 0;
+}
+
+.candidate + .candidate {
+  border-top: 2px dashed var(--haze);
 }
 
 .candidate__sprite {
   display: grid;
   place-items: center;
-  width: 56px;
-  height: 56px;
-  background: var(--dusk-deep);
+  width: 48px;
+  height: 48px;
 }
 
 .candidate__costume {
@@ -490,8 +542,8 @@ textarea.input {
   font-size: var(--text-sm);
 }
 
-.candidate--voted {
-  background: #2f4a4a;
+.candidate--voted .candidate__costume {
+  color: var(--mint);
 }
 
 .candidate__badge {
@@ -525,19 +577,14 @@ textarea.input {
 }
 
 .progress {
-  height: 16px;
-  margin: var(--px);
-  background: var(--dusk-deep);
-  box-shadow:
-    0 calc(var(--px) * -1) 0 0 var(--haze),
-    0 var(--px) 0 0 var(--haze),
-    calc(var(--px) * -1) 0 0 0 var(--haze),
-    var(--px) 0 0 0 var(--haze);
+  height: 20px;
+  border: var(--px) solid var(--frame);
+  background: var(--night);
 }
 
 .progress__fill {
   height: 100%;
-  background: repeating-linear-gradient(90deg, var(--pumpkin) 0 12px, var(--pumpkin-deep) 12px 16px);
+  background: var(--gold);
   transition: width 600ms var(--ease-soft);
 }
 
@@ -725,10 +772,9 @@ textarea.input {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin: 0 var(--px);
   padding: 10px 12px;
-  border-left: var(--px) solid var(--pumpkin);
-  background: var(--dusk-deep);
+  border: var(--px) solid var(--haze);
+  background: var(--box);
   color: inherit;
   text-decoration: none;
 }
@@ -792,7 +838,7 @@ html {
 
 .phases__step {
   padding: 8px 6px;
-  background: var(--dusk-deep);
+  border: 2px solid var(--haze);
   color: var(--haze-soft);
   font-size: var(--text-sm);
   text-align: center;
@@ -802,8 +848,8 @@ html {
 }
 
 .phases__step--current {
-  background: var(--pumpkin);
-  color: var(--night);
+  border-color: var(--gold);
+  color: var(--gold);
   font-weight: var(--weight-display);
 }
 

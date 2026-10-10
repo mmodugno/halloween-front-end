@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 import api from "../api";
 import { loadVotedIds, saveVotedIds } from "../session";
@@ -9,6 +9,8 @@ import Toast, { useToast } from "../components/pixel/Toast";
 import CandidateRow from "../components/CandidateRow";
 import VoteSheet from "../components/VoteSheet";
 import Admin from "../components/Admin";
+import DialogBox from "../components/pixel/DialogBox";
+import { play } from "../sound";
 import LiveFeed, { LatestMessage } from "../components/LiveFeed";
 
 const FEED_POLL_MS = 5000;
@@ -66,6 +68,7 @@ const Home = ({ session, onLogout, game, onGameChange }) => {
     try {
       await api.undoVote(passphrase, candidate.id);
     } catch (e) {
+      play("error");
       showToast(e.message.includes("too late") ? "Ya pasó el tiempo para deshacer ese voto." : "No se pudo deshacer el voto.");
       return;
     }
@@ -82,12 +85,14 @@ const Home = ({ session, onLogout, game, onGameChange }) => {
       let text = "No se pudo votar. Probá de nuevo en un ratito.";
       if (e.message.includes("has already voted")) text = "Ese voto ya estaba hecho.";
       if (e.message.includes("voting is closed")) text = "La votación está cerrada.";
+      play("error");
       showToast(text);
       return false;
     }
     updateVotedIds((ids) => [...ids, candidate.id]);
     setPendingVotes((n) => Math.max(n - 1, 0));
     setVoting(null);
+    play("vote");
     showToast(`Votaste a ${candidate.costume}`, {
       tone: "success",
       action: { label: "Deshacer", onClick: () => undo(candidate) },
@@ -97,6 +102,12 @@ const Home = ({ session, onLogout, game, onGameChange }) => {
 
   const loaded = pendingVotes !== null;
   const done = loaded && pendingVotes === 0;
+  const intro = done
+    ? ["Listo, ya usaste tus votos.", "Los ganadores aparecen acá cuando se cierre la votación."]
+    : [
+        pendingVotes === 1 ? "Te queda 1 voto." : `Te quedan ${pendingVotes} votos.`,
+        "Elegí un disfraz y dejale un mensajito.",
+      ];
 
   return (
     <main className="screen stack">
@@ -106,30 +117,17 @@ const Home = ({ session, onLogout, game, onGameChange }) => {
 
       {loaded && (
         <div className="vote-status">
-          <span>{done ? "Sin votos" : pendingVotes === 1 ? "Te queda 1 voto" : `Te quedan ${pendingVotes} votos`}</span>
+          <span>Tus votos</span>
           <VoteMeter left={pendingVotes} used={votedIds.length} />
         </div>
       )}
 
       <LatestMessage item={feed[0]} />
 
-      <AnimatePresence mode="wait" initial={false}>
-        {done ? (
-          <motion.div key="done" className="panel panel--mint" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}>
-            <p>Listo, ya usaste tus votos.</p>
-            <p className="muted">Los ganadores aparecen acá cuando se cierre la votación.</p>
-          </motion.div>
-        ) : (
-          <motion.p key="intro" className="muted" exit={{ opacity: 0 }}>
-            {loaded
-              ? `Elegí ${pendingVotes === 1 ? "1 disfraz más" : `hasta ${pendingVotes} disfraces`} y dejales un mensajito.`
-              : "Cargando disfraces…"}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {loaded && <DialogBox lines={intro} className={done ? "panel--mint" : ""} />}
 
       {candidates.length > 0 && (
-        <motion.ul className="candidate-list" variants={list} initial="hidden" animate="show">
+        <motion.ul className="panel candidate-list" variants={list} initial="hidden" animate="show">
           {candidates.map((candidate, index) => (
             <CandidateRow
               key={candidate.id}
