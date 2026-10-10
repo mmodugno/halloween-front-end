@@ -1,87 +1,66 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import SendIcon from '@mui/icons-material/Send';
+import React, { useState } from "react";
+import { motion, useAnimationControls } from "framer-motion";
+import api from "../api";
 
-import Ghost from '../components/SplashGhost'
+function Splash({ onLogin }) {
+  const [passphrase, setPassphrase] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const shake = useAnimationControls();
 
-import '../styles/Splash.css';
-
-function Splash({ setPassphrase, setUserID, setIsAdmin }) {
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    const [wrongPassword, setWrongPassword] = useState(false)
-    const [passphraseInput, setPassphraseInput] = useState('')
-
-    async function validatePassphrase() {
-        const requestLogInOptions = {
-            method: 'GET',
-            headers: {
-                'User': passphraseInput,
-            },
-        };
-        try {
-            const userData = await (await fetch(backendUrl + '/users/login', requestLogInOptions)).json()
-            setUserID(userData.id)
-            localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
-            localStorage.setItem('halloween-user', JSON.stringify(userData.id));
-            localStorage.setItem('halloween-admin', JSON.stringify(userData.is_admin));
-            localStorage.setItem('halloween-pending-votes', JSON.stringify(userData.pending_votes));
-            setPassphrase(passphraseInput)
-            setIsAdmin(userData.is_admin)
-            return setWrongPassword(false)
-        }
-        catch (e) {
-            console.log(e);
-            setWrongPassword(true)
-        }
-
-        if (passphraseInput === 'maga' || passphraseInput === 'winner') {
-            setUserID(1)
-            localStorage.setItem('halloween-passphrase', JSON.stringify(passphraseInput));
-            localStorage.setItem('halloween-user', JSON.stringify(1));
-            localStorage.setItem('halloween-admin', JSON.stringify(true));
-            setPassphrase(passphraseInput)
-            setIsAdmin(true)
-
-            return setWrongPassword(false)
-        }
-        setWrongPassword(true)
+  async function submit(e) {
+    e.preventDefault();
+    if (!passphrase.trim()) {
+      setError("Escribí tu contraseña para entrar.");
+      shake.start({ x: [0, -8, 8, -6, 6, 0], transition: { duration: 0.4 } });
+      return;
     }
+    setLoading(true);
+    try {
+      const user = await api.login(passphrase.trim());
+      onLogin({ passphrase: passphrase.trim(), userID: user.id, isAdmin: user.is_admin });
+    } catch (err) {
+      console.error(err);
+      setError("Esa contraseña no existe. Revisá la que te pasaron.");
+      shake.start({ x: [0, -8, 8, -6, 6, 0], transition: { duration: 0.4 } });
+      setLoading(false);
+    }
+  }
 
-    return (
-        <Box style={{ height: "100vh", backgroundColor: "#ec661e" }} sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
-            <Box>
-                <Typography variant="h3" gutterBottom sx={{ fontFamily: 'Halloween' }}>
-                    BIENVENIDOS
-                </Typography>
-            </Box>
-            <Ghost />
-            <Box>
-                <ButtonGroup variant="contained" aria-label="Basic button group">
-                    <TextField
-                        inputProps={{ style: { textTransform: "lowercase" } }}
-                        required
-                        value={passphraseInput}
-                        onChange={p => setPassphraseInput(p.target.value.toLowerCase())}
-                        label="Contraseña"
-                    />
-                    <Button
-                        sx={{ backgroundColor: "#000000 !important" }}
-                        onClick={async () => await validatePassphrase()}
-                    >
-                        <SendIcon />
-                    </Button>
-                </ButtonGroup>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-                <span>{wrongPassword ? "⚠️ Contraseña incorrecta." : ""}</span>
-            </Box>
-        </Box>
-    );
+  return (
+    <main className="screen screen--center" style={{ paddingTop: "calc(14vh + 140px)", justifyContent: "flex-start" }}>
+      <div className="stack" style={{ gap: 8 }}>
+        <h1 style={{ fontSize: "var(--text-xxl)" }}>Noche de disfraces</h1>
+        <p className="muted">Entrá con tu contraseña para votar el mejor disfraz.</p>
+      </div>
+      <motion.form animate={shake} onSubmit={submit} className="panel stack" style={{ width: "100%", textAlign: "left" }} noValidate>
+        <label htmlFor="passphrase">Contraseña</label>
+        <input
+          id="passphrase"
+          className={`input ${error ? "input--error" : ""}`}
+          value={passphrase}
+          onChange={(e) => {
+            setPassphrase(e.target.value.toLowerCase());
+            setError("");
+          }}
+          autoComplete="off"
+          autoCapitalize="none"
+          spellCheck="false"
+          placeholder="ej: maga42"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? "passphrase-error" : undefined}
+        />
+        {error && (
+          <p id="passphrase-error" className="field-error" role="alert">
+            {error}
+          </p>
+        )}
+        <button type="submit" className="btn btn--block" disabled={loading}>
+          {loading ? <span className="loading-dots">Entrando</span> : "Entrar"}
+        </button>
+      </motion.form>
+    </main>
+  );
 }
 
 export default Splash;
-

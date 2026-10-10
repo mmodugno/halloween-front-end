@@ -1,21 +1,18 @@
-import * as React from 'react';
-import Dialog from '@mui/material/Dialog';
+import React from "react";
+import Sheet from "./pixel/Sheet";
 
-function EasterEgg({open, setOpen}) {
-  const handleClose = (value) => {
-    setOpen(false);
-  };
-
+export default function EasterEgg({ open, onClose }) {
   return (
-    <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-      >
-        <img src={require('../assets/paraaa.gif')} alt="you can't pass" />
-      </Dialog>
-    </div>
+    <Sheet open={open} onClose={onClose} labelledBy="easter-egg-title">
+      <h2 id="easter-egg-title" className="visually-hidden">
+        Sorpresa
+      </h2>
+      <img src={require("../assets/paraaa.gif")} alt="" style={{ width: "100%", imageRendering: "pixelated" }} />
+      <div className="sheet__actions">
+        <button type="button" className="btn btn--quiet" onClick={onClose}>
+          Cerrar
+        </button>
+      </div>
+    </Sheet>
   );
 }
-
-export default EasterEgg;

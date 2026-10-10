@@ -1,85 +1,37 @@
-// src/Lobby.js
-import React from "react";
-import { Container, Typography, Box, useTheme } from "@mui/material";
-import { styled } from "@mui/system";
-import HalloweenButton from "../components/base/HalloweenButton";
+import React, { useState } from "react";
+import api from "../api";
+import PixelSprite from "../components/pixel/PixelSprite";
+import { pumpkin } from "../components/pixel/sprites";
 
-const Lobby = ({ isAdmin }) => {
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
-  const theme = useTheme();
-  const pulseAnimation = `
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-`;
-  const AnimatedTypography = styled(Typography)`
-    ${pulseAnimation}
-    animation: pulse 10s infinite;
-  `;
+const Lobby = ({ isAdmin, onStarted }) => {
+  const [starting, setStarting] = useState(false);
 
-  async function startGame() {
-    const requestOptions = {
-      method: "PUT",
-    };
+  const start = async () => {
+    setStarting(true);
     try {
-      await (await fetch(backendUrl + "/start", requestOptions)).json();
+      await api.start();
+      onStarted();
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      setStarting(false);
     }
-    window.location.reload();
-  }
+  };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        height: "80vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        color: "#ffffff",
-        textAlign: "center",
-      }}
-    >
-      <AnimatedTypography
-        variant="h4"
-        component="h1"
-        sx={{
-          marginBottom: theme.spacing(4),
-          fontFamily: "Halloween",
-          color: "#D3D3D3",
-        }}
-      >
-        LA VOTACION <span style={{ color: "#880808" }}>NO </span> ESTA ABIERTA
-        TODAVIA
-      </AnimatedTypography>
-      <Box mb={4}>
-        <img
-          src="https://media.giphy.com/media/fvwgJhsUcvVrIFLsuk/giphy.gif"
-          alt="Waiting"
-          style={{ width: "100%", maxWidth: "400px", height: "auto" }}
-        />
-      </Box>
-      <div>
-        {isAdmin ? (
-          <HalloweenButton onClick={() => startGame()}>
-            {" "}
-            COMENZAR JUEGO
-          </HalloweenButton>
-        ) : (
-          ""
-        )}
+    <main className="screen screen--center" style={{ paddingTop: "calc(14vh + 140px)", justifyContent: "flex-start" }}>
+      <div className="stack" style={{ gap: 8, alignItems: "center" }}>
+        <h1>La votación todavía no abrió</h1>
+        <p className="muted">
+          Cuando arranque, esta pantalla cambia sola<span className="loading-dots" />
+        </p>
       </div>
-    </Container>
+      <PixelSprite sprite={pumpkin} scale={8} classes={{ Y: "flicker" }} title="Calabaza" />
+      {isAdmin && (
+        <button type="button" className="btn" onClick={start} disabled={starting}>
+          {starting ? "Abriendo…" : "Abrir votación"}
+        </button>
+      )}
+    </main>
   );
 };
 
