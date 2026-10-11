@@ -19,27 +19,34 @@ async function request(path, { method = "GET", passphrase, body } = {}) {
 
 const api = {
   login: (passphrase) => request("/users/login", { passphrase }),
-  users: () => request("/users"),
-  vote: (passphrase, candidateId, message) =>
+  // [{ id, name, members: ["Lu", "Tomi"] }]: what people vote for.
+  costumes: () => request("/costumes"),
+  // { costume, costume_id (to join an existing one), name, partners: [] }
+  // -> { costume: { id, name }, users: [{ name, pw_code, ... }] }, registrant first.
+  register: (form) => request("/register", { method: "POST", body: form }),
+  vote: (passphrase, costumeId, message) =>
     request("/votes", {
       method: "POST",
       passphrase,
-      body: { user_costume_id: candidateId, message },
+      body: { costume_id: costumeId, message },
     }),
   undoVote: (passphrase, candidateId) => request(`/votes/${candidateId}`, { method: "DELETE", passphrase }),
   feed: () => request("/feed"),
   // { guests, cast, possible }
   stats: () => request("/stats"),
   winners: () => request("/results/winners"),
-  // Votes and messages a user received (only that user or an admin can read them).
-  messages: (passphrase, userID) => request(`/results/${userID}`, { passphrase }),
-  // { started, finished }
+  // Votes and messages a costume received (only its members or an admin can read them).
+  messages: (passphrase, costumeID) => request(`/results/${costumeID}`, { passphrase }),
+  // { started, finished, registration_open, votes_per_user }
   game: () => request("/game"),
 };
 
 // Admin only: every call sends the admin's pass code.
 export const adminApi = (passphrase) => ({
   setGame: (state) => request("/game", { method: "PUT", passphrase, body: state }),
+  // { registration_open, votes_per_user } -> the whole game state.
+  setRegistration: (settings) => request("/admin/registration", { method: "PUT", passphrase, body: settings }),
+  renameCostume: (id, name) => request(`/admin/costumes/${id}`, { method: "PUT", passphrase, body: { name } }),
   results: () => request("/results", { passphrase }),
   users: () => request("/admin/users", { passphrase }),
   createUsers: (users) => request("/users/batch", { method: "POST", passphrase, body: users }).then((r) => r.Users),

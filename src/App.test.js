@@ -4,9 +4,38 @@ import { rankWinners } from "./components/WinnerPodium";
 import * as sprites from "./components/pixel/sprites";
 
 test("splash asks for the password", () => {
-  render(<Splash onLogin={() => {}} />);
+  render(<Splash game={{ started: true, finished: false, registration_open: true }} onLogin={() => {}} />);
   expect(screen.getByRole("heading", { name: /noche de disfraces/i })).toBeInTheDocument();
   expect(screen.getByLabelText(/contraseña/i)).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /anotarme/i })).not.toBeInTheDocument();
+});
+
+test("splash offers signing up before the vote opens", () => {
+  render(<Splash game={{ started: false, finished: false, registration_open: true }} onLogin={() => {}} />);
+  expect(screen.getByRole("button", { name: /anotarme con mi disfraz/i })).toBeInTheDocument();
+  expect(screen.getByLabelText(/ya tenés contraseña/i)).toBeInTheDocument();
+});
+
+test("joinNames lists people the Spanish way", () => {
+  const { joinNames } = require("./session");
+  expect(joinNames(["Lu"])).toBe("Lu");
+  expect(joinNames(["Lu", "Tomi"])).toBe("Lu y Tomi");
+  expect(joinNames(["Lu", "Sol", "Tomi"])).toBe("Lu, Sol y Tomi");
+});
+
+test("groupByCostume groups guests and leaves people without costume last", () => {
+  const { groupByCostume } = require("./components/admin/GuestsTab");
+  const groups = groupByCostume([
+    { id: 1, name: "Maga", costume: "", costume_id: 0 },
+    { id: 2, name: "Lu", costume: "Zombie", costume_id: 7 },
+    { id: 3, name: "Tomi", costume: "Bruja", costume_id: 4 },
+    { id: 4, name: "Sol", costume: "Zombie", costume_id: 7 },
+  ]);
+  expect(groups.map((g) => [g.name, g.members.map((m) => m.name)])).toEqual([
+    ["Bruja", ["Tomi"]],
+    ["Zombie", ["Lu", "Sol"]],
+    ["", ["Maga"]],
+  ]);
 });
 
 test("rankWinners sorts by votes and ties share a position", () => {
@@ -31,7 +60,6 @@ test("sprites are rectangular and every pixel has a color", () => {
     expect([name, missing]).toEqual([name, []]);
   }
 });
-
 
 test("parseGuestList accepts commas, dashes, tabs and names alone", () => {
   const { parseGuestList } = require("./components/admin/GuestsTab");

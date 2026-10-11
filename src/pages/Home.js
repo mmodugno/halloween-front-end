@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 
 import api from "../api";
-import { loadVotedIds, saveVotedIds } from "../session";
+import { joinNames, loadVotedIds, saveVotedIds } from "../session";
 import PixelSprite from "../components/pixel/PixelSprite";
 import { heart } from "../components/pixel/sprites";
 import Toast, { useToast } from "../components/pixel/Toast";
@@ -30,7 +30,7 @@ function VoteMeter({ left, used }) {
 }
 
 const Home = ({ session, onLogout, onOpenAdmin }) => {
-  const { passphrase, userID } = session;
+  const { passphrase, userID, costumeID } = session;
   const [candidates, setCandidates] = useState([]);
   const [votedIds, setVotedIds] = useState(() => loadVotedIds(userID));
   const [pendingVotes, setPendingVotes] = useState(null);
@@ -47,7 +47,10 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
   }, [loadFeed]);
 
   useEffect(() => {
-    api.users().then(setCandidates).catch(console.error);
+    api
+      .costumes()
+      .then((costumes) => setCandidates(costumes.map((c) => ({ id: c.id, costume: c.name, name: joinNames(c.members) }))))
+      .catch(console.error);
     // The backend is the source of truth for how many votes are left.
     api
       .login(passphrase)
@@ -103,10 +106,7 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
   const done = loaded && pendingVotes === 0;
   const intro = done
     ? ["Listo, ya usaste tus votos.", "Los ganadores aparecen acá cuando se cierre la votación."]
-    : [
-        pendingVotes === 1 ? "Te queda 1 voto." : `Te quedan ${pendingVotes} votos.`,
-        "Elegí un disfraz y dejale un mensajito.",
-      ];
+    : [pendingVotes === 1 ? "Te queda 1 voto." : `Te quedan ${pendingVotes} votos.`, "Elegí un disfraz y dejale un mensajito."];
 
   return (
     <main className="screen stack">
@@ -140,7 +140,7 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
               key={candidate.id}
               candidate={candidate}
               index={index}
-              isSelf={candidate.id === userID}
+              isSelf={candidate.id === costumeID}
               voted={votedIds.includes(candidate.id)}
               canVote={loaded && pendingVotes > 0}
               onVote={setVoting}
@@ -150,7 +150,6 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
       )}
 
       <LiveFeed items={feed} />
-
 
       <div style={{ textAlign: "center" }}>
         <button type="button" className="link" onClick={onLogout}>

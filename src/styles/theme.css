@@ -1168,3 +1168,78 @@ html {
 .reveal__podium .podium {
   zoom: 1.8; /* the podium is sized for phones; scale it up for the TV */
 }
+
+/* ---------- Sign-up ---------- */
+
+.suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.suggestion,
+.partner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.suggestion {
+  padding: 8px 10px;
+  border: 2px dashed var(--haze-soft);
+}
+
+.partner__remove {
+  min-width: 44px;
+  padding: 6px 12px;
+}
+
+.partner__remove::before {
+  display: none;
+}
+
+.join-pick {
+  padding: 10px 12px;
+  border: 2px solid var(--mint);
+}
+
+.code-card {
+  align-items: center;
+  text-align: center;
+}
+
+.code-card__code {
+  margin: 0;
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: var(--text-xxl);
+  font-weight: var(--weight-display);
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+.guest__code-text {
+  margin: 2px 0 0;
+  color: var(--pumpkin);
+  font-size: var(--text-lg);
+}
+
+.costume-group + .costume-group {
+  margin-top: 8px;
+}
+
+.costume-group__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--haze);
+}
+
+.costume-group__head h3 {
+  margin: 0;
+  color: var(--gold);
+  font-size: var(--text-md);
+}

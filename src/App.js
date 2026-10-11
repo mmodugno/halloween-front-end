@@ -3,7 +3,7 @@ import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { detectIncognito } from "detectincognitojs";
 
 import api from "./api";
-import { clearSession, loadSession, saveSession } from "./session";
+import { clearSession, loadSession, saveSession, sessionFor } from "./session";
 import { play } from "./sound";
 import Scene from "./components/pixel/Scene";
 import SoundToggle from "./components/pixel/SoundToggle";
@@ -63,14 +63,14 @@ function App() {
 
   // Check the saved session against the backend: if the user no longer exists
   // (e.g. the database was reset) go back to the login screen; otherwise keep
-  // the admin flag up to date.
+  // the admin flag and costume up to date.
   useEffect(() => {
     if (!session) return;
     api
       .login(session.passphrase)
       .then((user) => {
-        if (user.is_admin !== session.isAdmin || user.id !== session.userID) {
-          const updated = { ...session, userID: user.id, isAdmin: user.is_admin };
+        const updated = sessionFor(session.passphrase, user);
+        if (Object.keys(updated).some((key) => updated[key] !== session[key])) {
           saveSession(updated);
           setSession(updated);
         }
@@ -134,7 +134,7 @@ function App() {
   const openAdmin = session?.isAdmin ? () => setAdminOpen(true) : undefined;
   const pages = {
     incognito: <Incognito />,
-    splash: <Splash onLogin={login} />,
+    splash: <Splash game={game} onLogin={login} />,
     lobby: <Lobby session={session} onGameChange={setGame} onOpenAdmin={openAdmin} />,
     home: <Home session={session} onLogout={logout} onOpenAdmin={openAdmin} />,
     winner: <Winner session={session} onOpenAdmin={openAdmin} />,

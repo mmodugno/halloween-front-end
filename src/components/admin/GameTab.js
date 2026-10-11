@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "../../api";
+import { copy } from "../../clipboard";
 import ConfirmSheet from "./ConfirmSheet";
 
 const PHASES = [
@@ -28,6 +28,80 @@ function transition(from, to) {
   };
 }
 
+// Who can sign up on their own, and how many votes they get.
+function Registration({ admin, game, onGameChange, toast }) {
+  const [votes, setVotes] = useState(game.votes_per_user ?? 2);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => setVotes(game.votes_per_user ?? 2), [game.votes_per_user]);
+  const closedByVote = game.started || game.finished;
+  const open = game.registration_open && !closedByVote;
+
+  const save = async (settings) => {
+    setBusy(true);
+    try {
+      onGameChange(
+        await admin.setRegistration({ registration_open: game.registration_open, votes_per_user: votes, ...settings }),
+      );
+      toast("Inscripción actualizada", "success");
+    } catch (e) {
+      toast(`No se pudo: ${e.message}`);
+    }
+    setBusy(false);
+  };
+
+  const link = window.location.origin;
+  let status = "Cerrada: solo vos podés agregar invitados.";
+  if (open) status = "Abierta: cualquiera con el link se puede anotar con su disfraz.";
+  else if (closedByVote && game.registration_open)
+    status = "Se cerró sola porque arrancó la votación. Si volvés a la espera, se reabre.";
+
+  return (
+    <section className="panel stack">
+      <h2 className="admin__subtitle">Inscripción</h2>
+      <p>
+        <span className={`tag ${open ? "tag--mint" : "tag--rose"}`}>{open ? "Abierta" : "Cerrada"}</span>
+      </p>
+      <p className="muted">{status}</p>
+      <p className="join__url">{window.location.host}</p>
+      <div className="admin__actions">
+        <button
+          type="button"
+          className="btn btn--quiet"
+          onClick={async () => toast((await copy(link)) ? "Copiaste el link" : "No se pudo copiar")}
+        >
+          Copiar link para invitar
+        </button>
+        <button
+          type="button"
+          className="btn btn--quiet"
+          disabled={busy}
+          onClick={() => save({ registration_open: !game.registration_open })}
+        >
+          {game.registration_open ? "Cerrar inscripción" : "Abrir inscripción"}
+        </button>
+      </div>
+      <label className="field">
+        <span>Votos para cada persona que se anota</span>
+        <span className="admin__actions">
+          <input
+            className="input input--short"
+            type="number"
+            min={0}
+            max={20}
+            value={votes}
+            onChange={(e) => setVotes(Math.max(0, Number(e.target.value)))}
+          />
+          {votes !== game.votes_per_user && (
+            <button type="button" className="btn" disabled={busy} onClick={() => save({})}>
+              Guardar
+            </button>
+          )}
+        </span>
+      </label>
+    </section>
+  );
+}
+
 export default function GameTab({ admin, game, onGameChange, toast }) {
   const [target, setTarget] = useState(null);
   const [resetting, setResetting] = useState(false);
@@ -39,7 +113,7 @@ export default function GameTab({ admin, game, onGameChange, toast }) {
 
   useEffect(() => {
     const load = () =>
-      Promise.all([admin.results(), api.users()])
+      Promise.all([admin.results(), admin.users()])
         .then(([results, users]) => {
           const cast = results.reduce((acc, row) => acc + row.votes_count, 0);
           setProgress({ cast, possible: cast + users.reduce((acc, u) => acc + u.pending_votes, 0) });
@@ -92,6 +166,8 @@ export default function GameTab({ admin, game, onGameChange, toast }) {
           })}
         </div>
       </section>
+
+      <Registration admin={admin} game={game} onGameChange={onGameChange} toast={toast} />
 
       <section className="panel stack">
         <h2 className="admin__subtitle">Pantalla grande</h2>
@@ -149,7 +225,7 @@ export default function GameTab({ admin, game, onGameChange, toast }) {
         onConfirm={() =>
           run(
             async () => onGameChange(await admin.setGame(PHASES.find((p) => p.id === target).state)),
-            () => setTarget(null)
+            () => setTarget(null),
           )
         }
       />
@@ -167,7 +243,7 @@ export default function GameTab({ admin, game, onGameChange, toast }) {
             () => {
               setResetting(false);
               toast("Votos borrados. Todos empiezan de cero.", "success");
-            }
+            },
           )
         }
       />

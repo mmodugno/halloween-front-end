@@ -4,21 +4,7 @@ import GuestSheet from "./GuestSheet";
 import ConfirmSheet from "./ConfirmSheet";
 import LoadError from "./LoadError";
 import useAdminData from "../../hooks/useAdminData";
-
-async function copy(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    const area = document.createElement("textarea");
-    area.value = text;
-    document.body.appendChild(area);
-    area.select();
-    const ok = document.execCommand("copy");
-    area.remove();
-    return ok;
-  }
-}
+import { copy } from "../../clipboard";
 
 // "Lu, Bruja del bosque" / "Lu - Bruja" / "Lu<TAB>Bruja" / "Lu" per line.
 export function parseGuestList(text, votes) {
@@ -33,6 +19,17 @@ export function parseGuestList(text, votes) {
     .filter((g) => g.name);
 }
 
+// Guests grouped by costume (sorted by costume), people without one last.
+export function groupByCostume(guests) {
+  const groups = new Map();
+  for (const g of guests) {
+    const key = g.costume_id || 0;
+    if (!groups.has(key)) groups.set(key, { id: key, name: g.costume, members: [] });
+    groups.get(key).members.push(g);
+  }
+  return [...groups.values()].sort((a, b) => !a.id - !b.id || a.name.localeCompare(b.name, "es"));
+}
+
 export default function GuestsTab({ admin, session, toast }) {
   const [editing, setEditing] = useState(null); // guest object, or {} to add one
   const [deleting, setDeleting] = useState(null);
@@ -41,13 +38,19 @@ export default function GuestsTab({ admin, session, toast }) {
   const [bulkVotes, setBulkVotes] = useState(2);
   const [busy, setBusy] = useState(false);
   const [fresh, setFresh] = useState([]); // ids just created, highlighted
+  const [renaming, setRenaming] = useState(null); // { id, name } of a costume
 
   const { data: guests, error: loadError, load } = useAdminData(admin.users);
 
   const created = async (users) => {
     setFresh(users.map((u) => u.id));
     await load();
-    toast(users.length === 1 ? `Listo, la contraseña de ${users[0].name} es ${users[0].pw_code}` : `Agregaste ${users.length} invitados`, "success");
+    toast(
+      users.length === 1
+        ? `Listo, la contraseña de ${users[0].name} es ${users[0].pw_code}`
+        : `Agregaste ${users.length} invitados`,
+      "success",
+    );
   };
 
   const save = async (guest) => {
@@ -95,14 +98,31 @@ export default function GuestsTab({ admin, session, toast }) {
     setBusy(false);
   };
 
+  const rename = async (e) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      await admin.renameCostume(renaming.id, renaming.name);
+      setRenaming(null);
+      await load();
+      toast("Disfraz renombrado", "success");
+    } catch (err) {
+      toast(`No se pudo renombrar: ${err.message}`);
+    }
+    setBusy(false);
+  };
+
   const copyAll = async () => {
-    const text = guests.map((g) => `${g.name}: ${g.pw_code}`).join("\n");
+    const text = groupByCostume(guests)
+      .map((c) => `${c.name || "Sin disfraz"}\n${c.members.map((g) => `  ${g.name}: ${g.pw_code}`).join("\n")}`)
+      .join("\n\n");
     toast((await copy(text)) ? "Copiaste todas las contraseñas" : "No se pudo copiar");
   };
 
   if (loadError && guests === null) return <LoadError error={loadError} onRetry={load} />;
   if (guests === null) return null;
   const preview = parseGuestList(bulkText, bulkVotes);
+  const groups = groupByCostume(guests);
 
   return (
     <div className="stack">
@@ -120,43 +140,61 @@ export default function GuestsTab({ admin, session, toast }) {
         )}
       </div>
 
+      {guests.length > 0 && (
+        <p className="muted">
+          {guests.length} {guests.length === 1 ? "invitado" : "invitados"} en {groups.filter((c) => c.id).length} disfraces
+        </p>
+      )}
+
       <section className="panel">
         {guests.length === 0 ? (
-          <p className="muted">Todavía no hay invitados. Agregá uno o pegá una lista.</p>
+          <p className="muted">Todavía no hay invitados. Compartí el link para que se anoten, o agregalos vos.</p>
         ) : (
-          <ul className="guest-list">
-            {guests.map((g) => (
-              <li key={g.id} className={`guest ${fresh.includes(g.id) ? "guest--fresh" : ""}`}>
-                <div className="guest__info">
-                  <p className="candidate__costume">
-                    {g.name} {g.is_admin && <span className="tag">admin</span>}
-                  </p>
-                  <p className="candidate__name">{g.costume || "Sin disfraz cargado"}</p>
-                  <p className="guest__meta">
-                    <button
-                      type="button"
-                      className="guest__code"
-                      onClick={async () => toast((await copy(g.pw_code)) ? `Copiaste ${g.pw_code}` : "No se pudo copiar")}
-                      aria-label={`Copiar la contraseña de ${g.name}`}
-                    >
-                      {g.pw_code}
+          groups.map((c) => (
+            <div key={c.id} className="costume-group">
+              <div className="costume-group__head">
+                <h3>{c.name || "Sin disfraz"}</h3>
+                {c.id > 0 && (
+                  <button type="button" className="link" onClick={() => setRenaming({ id: c.id, name: c.name })}>
+                    Renombrar
+                  </button>
+                )}
+              </div>
+              <ul className="guest-list">
+                {c.members.map((g) => (
+                  <li key={g.id} className={`guest ${fresh.includes(g.id) ? "guest--fresh" : ""}`}>
+                    <div className="guest__info">
+                      <p className="candidate__costume">
+                        {g.name} {g.is_admin && <span className="tag">admin</span>}
+                      </p>
+                      <p className="guest__meta">
+                        <button
+                          type="button"
+                          className="guest__code"
+                          onClick={async () => toast((await copy(g.pw_code)) ? `Copiaste ${g.pw_code}` : "No se pudo copiar")}
+                          aria-label={`Copiar la contraseña de ${g.name}`}
+                        >
+                          {g.pw_code}
+                        </button>
+                        <span className="muted">
+                          {g.pending_votes} {g.pending_votes === 1 ? "voto" : "votos"}
+                        </span>
+                      </p>
+                    </div>
+                    <button type="button" className="btn btn--quiet" onClick={() => setEditing(g)}>
+                      Editar
                     </button>
-                    <span className="muted">
-                      {g.pending_votes} {g.pending_votes === 1 ? "voto" : "votos"}
-                    </span>
-                  </p>
-                </div>
-                <button type="button" className="btn btn--quiet" onClick={() => setEditing(g)}>
-                  Editar
-                </button>
-              </li>
-            ))}
-          </ul>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
         )}
       </section>
 
       <GuestSheet
         guest={editing}
+        costumes={groups.filter((c) => c.id).map((c) => c.name)}
         isSelf={editing?.id === session.userID}
         onSave={save}
         onDelete={setDeleting}
@@ -165,7 +203,10 @@ export default function GuestsTab({ admin, session, toast }) {
 
       <Sheet open={bulkOpen} onClose={() => setBulkOpen(false)} labelledBy="bulk-title">
         <h2 id="bulk-title">Pegar una lista</h2>
-        <p className="muted">Un invitado por renglón: nombre y disfraz separados por una coma. El disfraz es opcional.</p>
+        <p className="muted">
+          Un invitado por renglón: nombre y disfraz separados por una coma. Si dos personas tienen el mismo disfraz, quedan en el
+          mismo grupo.
+        </p>
         <textarea
           className="input"
           rows={6}
@@ -195,10 +236,35 @@ export default function GuestsTab({ admin, session, toast }) {
         </div>
       </Sheet>
 
+      <Sheet open={Boolean(renaming)} onClose={() => setRenaming(null)} labelledBy="rename-title">
+        {renaming && (
+          <form className="stack" onSubmit={rename} noValidate>
+            <h2 id="rename-title">Renombrar disfraz</h2>
+            <input
+              className="input"
+              value={renaming.name}
+              onChange={(e) => setRenaming({ ...renaming, name: e.target.value })}
+              maxLength={60}
+              aria-label="Nombre del disfraz"
+              autoFocus
+            />
+            <p className="muted">Cambia para todo el grupo. Los votos que recibió se mantienen.</p>
+            <div className="sheet__actions">
+              <button type="button" className="btn btn--quiet" onClick={() => setRenaming(null)}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn" disabled={busy || !renaming.name.trim()}>
+                Guardar
+              </button>
+            </div>
+          </form>
+        )}
+      </Sheet>
+
       <ConfirmSheet
         open={Boolean(deleting)}
         title={deleting ? `¿Sacar a ${deleting.name}?` : ""}
-        detail="Se borran sus votos y los que recibió. Quienes lo habían votado recuperan ese voto."
+        detail="Se borran los votos que hizo. Si era la única persona con ese disfraz, el disfraz también se va y quienes lo habían votado recuperan ese voto."
         action="Sacar de la fiesta"
         danger
         busy={busy}

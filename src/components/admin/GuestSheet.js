@@ -5,7 +5,7 @@ const EMPTY = { name: "", costume: "", pending_votes: 2, is_admin: false };
 
 // Form to add a guest or edit one. Deleting is offered when editing someone
 // other than yourself.
-export default function GuestSheet({ guest, isSelf, onSave, onDelete, onClose }) {
+export default function GuestSheet({ guest, costumes = [], isSelf, onSave, onDelete, onClose }) {
   const editing = Boolean(guest?.id);
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState("");
@@ -20,7 +20,8 @@ export default function GuestSheet({ guest, isSelf, onSave, onDelete, onClose })
   const set = (field) => (e) =>
     setForm((f) => ({
       ...f,
-      [field]: e.target.type === "checkbox" ? e.target.checked : e.target.type === "number" ? Number(e.target.value) : e.target.value,
+      [field]:
+        e.target.type === "checkbox" ? e.target.checked : e.target.type === "number" ? Number(e.target.value) : e.target.value,
     }));
 
   const submit = async (e) => {
@@ -30,7 +31,8 @@ export default function GuestSheet({ guest, isSelf, onSave, onDelete, onClose })
       return;
     }
     setSaving(true);
-    const ok = await onSave({ ...form, pending_votes: Math.max(0, form.pending_votes || 0) });
+    // Only the costume text decides the group here, not the old costume id.
+    const ok = await onSave({ ...form, costume_id: 0, pending_votes: Math.max(0, form.pending_votes || 0) });
     if (!ok) setSaving(false);
   };
 
@@ -41,15 +43,40 @@ export default function GuestSheet({ guest, isSelf, onSave, onDelete, onClose })
           <h2 id="guest-title">{editing ? `Editar a ${guest.name}` : "Agregar invitado"}</h2>
           <label className="field">
             <span>Nombre</span>
-            <input className={`input ${error ? "input--error" : ""}`} value={form.name} onChange={set("name")} autoFocus={!editing} />
+            <input
+              className={`input ${error ? "input--error" : ""}`}
+              value={form.name}
+              onChange={set("name")}
+              autoFocus={!editing}
+            />
           </label>
           <label className="field">
             <span>Disfraz</span>
-            <input className="input" value={form.costume} onChange={set("costume")} placeholder="Se puede completar después" />
+            <input
+              className="input"
+              value={form.costume}
+              onChange={set("costume")}
+              placeholder="Se puede completar después"
+              list="costume-options"
+              maxLength={60}
+            />
+            <datalist id="costume-options">
+              {costumes.map((c) => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
+            <span className="muted">Con el nombre de un disfraz que ya existe, pasa a ese grupo.</span>
           </label>
           <label className="field">
             <span>{editing ? "Votos que le quedan" : "Votos"}</span>
-            <input className="input input--short" type="number" min={0} max={20} value={form.pending_votes} onChange={set("pending_votes")} />
+            <input
+              className="input input--short"
+              type="number"
+              min={0}
+              max={20}
+              value={form.pending_votes}
+              onChange={set("pending_votes")}
+            />
           </label>
           <label className="check">
             <input type="checkbox" checked={form.is_admin} onChange={set("is_admin")} disabled={isSelf} />

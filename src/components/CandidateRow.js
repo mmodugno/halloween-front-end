@@ -18,7 +18,7 @@ export default function CandidateRow({ candidate, index, isSelf, voted, canVote,
 
   let action;
   if (isSelf) {
-    action = <span className="candidate__badge candidate__badge--self">Sos vos</span>;
+    action = <span className="candidate__badge candidate__badge--self">Es el tuyo</span>;
   } else if (voted) {
     action = (
       <motion.span className="candidate__badge" {...pop}>

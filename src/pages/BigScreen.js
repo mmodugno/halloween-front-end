@@ -47,11 +47,14 @@ function useFeed() {
   return feed;
 }
 
-function Waiting() {
+function Waiting({ registrationOpen }) {
+  const lines = registrationOpen
+    ? ["La votación abre en un ratito.", "¿Todavía no te anotaste? Escaneá y anotate con tu disfraz."]
+    : ["La votación abre en un ratito.", "Mientras tanto, entrá con tu contraseña."];
   return (
     <div className="big__center">
       <h1 className="big__title">Noche de disfraces</h1>
-      <DialogBox lines={["La votación abre en un ratito.", "Mientras tanto, entrá con tu contraseña."]} className="big__dialog" />
+      <DialogBox lines={lines} className="big__dialog" />
       <PixelSprite sprite={pumpkin} scale={10} classes={{ Y: "flicker" }} />
       <JoinBox big />
     </div>
@@ -82,7 +85,11 @@ function MessageCarousel({ feed }) {
         >
           <DialogBox
             className="big__dialog big__dialog--message"
-            lines={item ? [`Para ${item.costume}:`, `“${item.message}”`] : ["Todavía no llegó ningún mensaje.", "Van a ir apareciendo acá durante la noche."]}
+            lines={
+              item
+                ? [`Para ${item.costume}:`, `“${item.message}”`]
+                : ["Todavía no llegó ningún mensaje.", "Van a ir apareciendo acá durante la noche."]
+            }
           />
         </motion.div>
       </AnimatePresence>
@@ -119,7 +126,10 @@ function Results() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    api.winners().then(setWinners).catch(() => setWinners([]));
+    api
+      .winners()
+      .then(setWinners)
+      .catch(() => setWinners([]));
   }, []);
 
   // Reveal order: from the lowest of the top 3 up to first place.
@@ -175,7 +185,11 @@ function Results() {
           >
             <p className="reveal__place">{PLACE[current.position] || `Puesto ${current.position}`}</p>
             {current.position === 1 && (
-              <motion.div initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6, type: "spring" }}>
+              <motion.div
+                initial={{ y: -80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.6, type: "spring" }}
+              >
                 <PixelSprite sprite={crown} scale={12} title="Corona" />
               </motion.div>
             )}
@@ -237,7 +251,7 @@ export default function BigScreen({ game }) {
           animate={{ opacity: 1, transition: { duration: 0.8 } }}
           exit={{ opacity: 0, transition: { duration: 0.5 } }}
         >
-          {phase === "waiting" && <Waiting />}
+          {phase === "waiting" && <Waiting registrationOpen={game.registration_open} />}
           {phase === "open" && <Voting feed={feed} stats={stats} />}
           {phase === "results" && <Results />}
         </motion.div>
