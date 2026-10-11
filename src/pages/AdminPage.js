@@ -6,10 +6,12 @@ import Toast, { useToast } from "../components/pixel/Toast";
 import GameTab from "../components/admin/GameTab";
 import GuestsTab from "../components/admin/GuestsTab";
 import ResultsTab from "../components/admin/ResultsTab";
+import MessagesTab from "../components/admin/MessagesTab";
 
 const TABS = [
   { id: "game", label: "Juego" },
   { id: "guests", label: "Invitados" },
+  { id: "messages", label: "Mensajes" },
   { id: "results", label: "Resultados" },
 ];
 
@@ -61,6 +63,7 @@ export default function AdminPage({ session, game, onGameChange, onClose }) {
         >
           {tab === "game" && <GameTab {...props} />}
           {tab === "guests" && <GuestsTab {...props} />}
+          {tab === "messages" && <MessagesTab {...props} />}
           {tab === "results" && <ResultsTab {...props} />}
         </motion.div>
       </AnimatePresence>

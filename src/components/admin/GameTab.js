@@ -94,6 +94,20 @@ export default function GameTab({ admin, game, onGameChange, toast }) {
       </section>
 
       <section className="panel stack">
+        <h2 className="admin__subtitle">Pantalla grande</h2>
+        <p className="muted">
+          Para la tele o el proyector: muestra el QR para entrar, los mensajes en vivo y, al final, revela a los ganadores. Se
+          actualiza sola toda la noche.
+        </p>
+        <p className="join__url">{window.location.host}/pantalla</p>
+        <div>
+          <a className="btn btn--quiet" href="/pantalla" target="_blank" rel="noreferrer">
+            Abrir pantalla grande
+          </a>
+        </div>
+      </section>
+
+      <section className="panel stack">
         <h2 className="admin__subtitle">Votos</h2>
         <p>
           {progress.cast} de {progress.possible} votos usados

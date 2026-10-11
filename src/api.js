@@ -28,6 +28,8 @@ const api = {
     }),
   undoVote: (passphrase, candidateId) => request(`/votes/${candidateId}`, { method: "DELETE", passphrase }),
   feed: () => request("/feed"),
+  // { guests, cast, possible }
+  stats: () => request("/stats"),
   winners: () => request("/results/winners"),
   // Votes and messages a user received (only that user or an admin can read them).
   messages: (passphrase, userID) => request(`/results/${userID}`, { passphrase }),
@@ -43,6 +45,8 @@ export const adminApi = (passphrase) => ({
   createUsers: (users) => request("/users/batch", { method: "POST", passphrase, body: users }).then((r) => r.Users),
   updateUser: (user) => request(`/admin/users/${user.id}`, { method: "PUT", passphrase, body: user }),
   deleteUser: (id) => request(`/admin/users/${id}`, { method: "DELETE", passphrase }),
+  messages: () => request("/admin/messages", { passphrase }),
+  setMessageHidden: (id, hidden) => request(`/admin/messages/${id}`, { method: "PUT", passphrase, body: { hidden } }),
   resetVotes: (votesPerUser) =>
     request("/admin/votes/reset", { method: "POST", passphrase, body: { votes_per_user: votesPerUser } }),
 });

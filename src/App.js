@@ -15,6 +15,10 @@ import Winner from "./pages/Winner";
 import Lobby from "./pages/Lobby";
 import Incognito from "./pages/Incognito";
 import AdminPage from "./pages/AdminPage";
+import BigScreen from "./pages/BigScreen";
+
+// The public big screen lives at /pantalla (or /#pantalla).
+const IS_SCREEN = /^\/pantalla\/?$/.test(window.location.pathname) || window.location.hash === "#pantalla";
 
 const POLL_MS = 5000;
 
@@ -104,6 +108,17 @@ function App() {
       setEasterEgg(true);
     }
   };
+
+  if (IS_SCREEN) {
+    return (
+      <MotionConfig reducedMotion="user">
+        <div className="app">
+          <Scene />
+          <BigScreen game={game} />
+        </div>
+      </MotionConfig>
+    );
+  }
 
   let screen;
   if (isIncognito) screen = "incognito";
