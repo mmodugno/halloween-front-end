@@ -1,14 +1,27 @@
 import React, { useCallback, useEffect, useState } from "react";
+import LoadError, { describe } from "./LoadError";
 
 export default function ResultsTab({ admin }) {
   const [results, setResults] = useState(null);
 
-  const load = useCallback(() => admin.results().then(setResults).catch(console.error), [admin]);
+  const [loadError, setLoadError] = useState("");
+  const load = useCallback(
+    () =>
+      admin
+        .results()
+        .then((data) => {
+          setResults(data);
+          setLoadError("");
+        })
+        .catch((e) => setLoadError(describe(e))),
+    [admin]
+  );
 
   useEffect(() => {
     load();
   }, [load]);
 
+  if (loadError && results === null) return <LoadError error={loadError} onRetry={load} />;
   if (results === null) return null;
 
   return (

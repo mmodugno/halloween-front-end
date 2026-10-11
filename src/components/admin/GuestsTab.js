@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Sheet from "../pixel/Sheet";
 import GuestSheet from "./GuestSheet";
 import ConfirmSheet from "./ConfirmSheet";
+import LoadError, { describe } from "./LoadError";
 
 async function copy(text) {
   try {
@@ -41,7 +42,18 @@ export default function GuestsTab({ admin, session, toast }) {
   const [busy, setBusy] = useState(false);
   const [fresh, setFresh] = useState([]); // ids just created, highlighted
 
-  const load = useCallback(() => admin.users().then(setGuests).catch(console.error), [admin]);
+  const [loadError, setLoadError] = useState("");
+  const load = useCallback(
+    () =>
+      admin
+        .users()
+        .then((data) => {
+          setGuests(data);
+          setLoadError("");
+        })
+        .catch((e) => setLoadError(describe(e))),
+    [admin]
+  );
 
   useEffect(() => {
     load();
@@ -103,6 +115,7 @@ export default function GuestsTab({ admin, session, toast }) {
     toast((await copy(text)) ? "Copiaste todas las contraseñas" : "No se pudo copiar");
   };
 
+  if (loadError && guests === null) return <LoadError error={loadError} onRetry={load} />;
   if (guests === null) return null;
   const preview = parseGuestList(bulkText, bulkVotes);
 

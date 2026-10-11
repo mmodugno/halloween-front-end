@@ -56,6 +56,29 @@ function App() {
     return () => clearInterval(id);
   }, []);
 
+  // Check the saved session against the backend: if the user no longer exists
+  // (e.g. the database was reset) go back to the login screen; otherwise keep
+  // the admin flag up to date.
+  useEffect(() => {
+    if (!session) return;
+    api
+      .login(session.passphrase)
+      .then((user) => {
+        if (user.is_admin !== session.isAdmin || user.id !== session.userID) {
+          const updated = { ...session, userID: user.id, isAdmin: user.is_admin };
+          saveSession(updated);
+          setSession(updated);
+        }
+      })
+      .catch((e) => {
+        if (e.message.includes("does not exist")) {
+          clearSession();
+          setSession(null);
+          setAdminOpen(false);
+        }
+      });
+  }, [session]);
+
   // Every RPG button makes a small "select" sound.
   useEffect(() => {
     const onClick = (e) => e.target.closest?.(".btn:not(:disabled)") && play("select");
