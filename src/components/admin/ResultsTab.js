@@ -1,25 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LoadError, { describe } from "./LoadError";
+import React from "react";
+import LoadError from "./LoadError";
+import useAdminData from "../../hooks/useAdminData";
 
 export default function ResultsTab({ admin }) {
-  const [results, setResults] = useState(null);
 
-  const [loadError, setLoadError] = useState("");
-  const load = useCallback(
-    () =>
-      admin
-        .results()
-        .then((data) => {
-          setResults(data);
-          setLoadError("");
-        })
-        .catch((e) => setLoadError(describe(e))),
-    [admin]
-  );
-
-  useEffect(() => {
-    load();
-  }, [load]);
+  const { data: results, error: loadError, load } = useAdminData(admin.results);
 
   if (loadError && results === null) return <LoadError error={loadError} onRetry={load} />;
   if (results === null) return null;

@@ -1,32 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import LoadError, { describe } from "./LoadError";
+import React, { useState } from "react";
+import LoadError from "./LoadError";
+import useAdminData from "../../hooks/useAdminData";
 
 const POLL_MS = 5000;
 
 // Every message as soon as it's written (before it reaches the public live
 // board), so the admin can hide one in time. Hidden messages still count as votes.
 export default function MessagesTab({ admin, toast }) {
-  const [messages, setMessages] = useState(null);
-  const [loadError, setLoadError] = useState("");
+  const { data: messages, error: loadError, load } = useAdminData(admin.messages, POLL_MS);
   const [busy, setBusy] = useState(null);
-
-  const load = useCallback(
-    () =>
-      admin
-        .messages()
-        .then((data) => {
-          setMessages(data);
-          setLoadError("");
-        })
-        .catch((e) => setLoadError(describe(e))),
-    [admin]
-  );
-
-  useEffect(() => {
-    load();
-    const id = setInterval(load, POLL_MS);
-    return () => clearInterval(id);
-  }, [load]);
 
   const toggle = async (m) => {
     setBusy(m.id);

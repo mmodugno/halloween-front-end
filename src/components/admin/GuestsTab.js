@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import Sheet from "../pixel/Sheet";
 import GuestSheet from "./GuestSheet";
 import ConfirmSheet from "./ConfirmSheet";
-import LoadError, { describe } from "./LoadError";
+import LoadError from "./LoadError";
+import useAdminData from "../../hooks/useAdminData";
 
 async function copy(text) {
   try {
@@ -33,7 +34,6 @@ export function parseGuestList(text, votes) {
 }
 
 export default function GuestsTab({ admin, session, toast }) {
-  const [guests, setGuests] = useState(null);
   const [editing, setEditing] = useState(null); // guest object, or {} to add one
   const [deleting, setDeleting] = useState(null);
   const [bulkOpen, setBulkOpen] = useState(false);
@@ -42,22 +42,7 @@ export default function GuestsTab({ admin, session, toast }) {
   const [busy, setBusy] = useState(false);
   const [fresh, setFresh] = useState([]); // ids just created, highlighted
 
-  const [loadError, setLoadError] = useState("");
-  const load = useCallback(
-    () =>
-      admin
-        .users()
-        .then((data) => {
-          setGuests(data);
-          setLoadError("");
-        })
-        .catch((e) => setLoadError(describe(e))),
-    [admin]
-  );
-
-  useEffect(() => {
-    load();
-  }, [load]);
+  const { data: guests, error: loadError, load } = useAdminData(admin.users);
 
   const created = async (users) => {
     setFresh(users.map((u) => u.id));

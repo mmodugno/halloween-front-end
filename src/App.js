@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { Suspense, lazy, useState, useEffect, useRef } from "react";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { detectIncognito } from "detectincognitojs";
 
@@ -14,8 +14,9 @@ import Splash from "./pages/Splash";
 import Winner from "./pages/Winner";
 import Lobby from "./pages/Lobby";
 import Incognito from "./pages/Incognito";
-import AdminPage from "./pages/AdminPage";
-import BigScreen from "./pages/BigScreen";
+// Only admins and the TV need these, so they load on demand.
+const AdminPage = lazy(() => import("./pages/AdminPage"));
+const BigScreen = lazy(() => import("./pages/BigScreen"));
 
 // The public big screen lives at /pantalla (or /#pantalla).
 const IS_SCREEN = /^\/pantalla\/?$/.test(window.location.pathname) || window.location.hash === "#pantalla";
@@ -114,7 +115,9 @@ function App() {
       <MotionConfig reducedMotion="user">
         <div className="app">
           <Scene />
-          <BigScreen game={game} />
+          <Suspense fallback={null}>
+            <BigScreen game={game} />
+          </Suspense>
         </div>
       </MotionConfig>
     );
@@ -146,7 +149,7 @@ function App() {
         <Mascot place={MASCOT_PLACE[screen]} onClick={screen === "splash" ? onGhostClick : undefined} />
         <AnimatePresence mode="wait">
           <motion.div key={screen} {...screenMotion}>
-            {pages[screen]}
+            <Suspense fallback={null}>{pages[screen]}</Suspense>
           </motion.div>
         </AnimatePresence>
         <EasterEgg open={easterEgg} onClose={() => setEasterEgg(false)} />
