@@ -21,7 +21,9 @@
 
   /* Typography: change these to switch fonts. */
   --font-display: "Pixelify Sans", system-ui, sans-serif;
-  --font-body: "Pixelify Sans", system-ui, sans-serif;
+  --font-body: "Fredoka", system-ui, sans-serif;
+  /* Passwords and codes: every digit and letter clearly different. */
+  --font-code: "Space Mono", ui-monospace, monospace;
   --weight-body: 400;
   --weight-strong: 600;
   --weight-display: 700;
@@ -1252,4 +1254,18 @@ html {
 
 .costume-group__head .tag {
   vertical-align: middle;
+}
+
+/* ---------- Passwords ---------- */
+
+.guest__code,
+.guest__code-text,
+.code-card__code,
+#passphrase {
+  font-family: var(--font-code);
+}
+
+.code-card__code {
+  font-size: var(--text-xl);
+  letter-spacing: 0;
 }
