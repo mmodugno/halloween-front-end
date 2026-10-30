@@ -13,7 +13,7 @@ export function useToast() {
   }, [toast]);
 
   const show = useCallback(
-    (message, { tone = "default", action, duration = action ? 8000 : 2600 } = {}) =>
+    (message, { tone = "default", action, duration = action ? 3000 : 2600 } = {}) =>
       setToast({ message, tone, action, duration, id: Date.now() }),
     []
   );

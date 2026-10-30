@@ -22,7 +22,7 @@ Las reglas de votación:
 - Nadie puede votar a un disfraz de su **grupo de amigos** (los grupos los armás vos, ver más abajo).
 - No se puede votar dos veces al mismo disfraz.
 - El mensaje es obligatorio (hasta 280 caracteres).
-- Un voto se puede deshacer durante 30 segundos.
+- Un voto se puede deshacer durante 3 segundos.
 
 ---
 
@@ -93,14 +93,15 @@ La lista de todos los invitados, agrupados por disfraz.
   Tomi, Zombie
   Sai
   ```
-  Si dos personas tienen el mismo disfraz, quedan en el mismo grupo.
+  Cada persona queda con su propio disfraz, aunque se llame igual que otro (puede ser que coincidan dos grupos distintos). Para juntarlos, editá a la persona y elegí con quién va.
 
 ### Editar a alguien
 
 Tocá **Editar** en la persona:
 
 - Cambiar nombre, votos que le quedan o si es admin (para hacer admin a alguien, tildá **Es admin**).
-- **Cambiarlo de disfraz:** escribí el nombre de otro disfraz que ya existe y pasa a ese grupo. Si escribís un nombre nuevo, se crea ese disfraz.
+- **Juntarlo con otro disfraz:** en **Disfraz** elegí con quién va y pasa a ese grupo.
+- **Separarlo:** en **Disfraz** elegí **Uno propio** y escribí de qué está disfrazado. Queda separado aunque el nombre coincida con otro.
 - **Sacar de la fiesta:** borra a la persona y los votos que hizo. Si era la única con ese disfraz, el disfraz también se va y quienes lo habían votado recuperan ese voto.
 
 ### Renombrar un disfraz

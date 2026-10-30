@@ -37,7 +37,7 @@ Cuando se abre la votación vas a ver la lista de disfraces.
   - **Tu propio disfraz:** dice "Es el tuyo".
   - **Los disfraces de tu grupo de amigos:** dice "Tu grupo". ¡La idea es que votes a alguien de afuera!
 - No podés votar dos veces al mismo disfraz.
-- **¿Te equivocaste?** Tenés 30 segundos para tocar **Deshacer** en el cartel que aparece.
+- **¿Te equivocaste?** Tenés 3 segundos para tocar **Deshacer** en el cartel que aparece.
 
 ---
 
