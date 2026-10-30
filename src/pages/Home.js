@@ -49,7 +49,9 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
   useEffect(() => {
     api
       .costumes()
-      .then((costumes) => setCandidates(costumes.map((c) => ({ id: c.id, costume: c.name, name: joinNames(c.members) }))))
+      .then((costumes) =>
+        setCandidates(costumes.map((c) => ({ id: c.id, costume: c.name, name: joinNames(c.members), groupID: c.group_id || 0 }))),
+      )
       .catch(console.error);
     // The backend is the source of truth for how many votes are left.
     api
@@ -87,6 +89,7 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
       let text = "No se pudo votar. Probá de nuevo en un ratito.";
       if (e.message.includes("has already voted")) text = "Ese voto ya estaba hecho.";
       if (e.message.includes("voting is closed")) text = "La votación está cerrada.";
+      if (e.message.includes("own group")) text = "No podés votar a alguien de tu grupo de amigos.";
       play("error");
       showToast(text);
       return false;
@@ -102,6 +105,8 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
     return true;
   };
 
+  // Groups of friends (set by the admin) can't vote for each other.
+  const myGroup = candidates.find((c) => c.id === costumeID)?.groupID || 0;
   const loaded = pendingVotes !== null;
   const done = loaded && pendingVotes === 0;
   const intro = done
@@ -141,6 +146,7 @@ const Home = ({ session, onLogout, onOpenAdmin }) => {
               candidate={candidate}
               index={index}
               isSelf={candidate.id === costumeID}
+              sameGroup={myGroup > 0 && candidate.groupID === myGroup}
               voted={votedIds.includes(candidate.id)}
               canVote={loaded && pendingVotes > 0}
               onVote={setVoting}

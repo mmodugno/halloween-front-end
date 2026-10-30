@@ -13,12 +13,14 @@ const pop = {
   animate: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 400, damping: 18 } },
 };
 
-export default function CandidateRow({ candidate, index, isSelf, voted, canVote, onVote }) {
+export default function CandidateRow({ candidate, index, isSelf, sameGroup, voted, canVote, onVote }) {
   const sprite = candidateSprites[index % candidateSprites.length];
 
   let action;
   if (isSelf) {
     action = <span className="candidate__badge candidate__badge--self">Es el tuyo</span>;
+  } else if (sameGroup && !voted) {
+    action = <span className="candidate__badge candidate__badge--self">Tu grupo</span>;
   } else if (voted) {
     action = (
       <motion.span className="candidate__badge" {...pop}>

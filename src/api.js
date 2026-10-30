@@ -47,6 +47,8 @@ export const adminApi = (passphrase) => ({
   // { registration_open, votes_per_user } -> the whole game state.
   setRegistration: (settings) => request("/admin/registration", { method: "PUT", passphrase, body: settings }),
   renameCostume: (id, name) => request(`/admin/costumes/${id}`, { method: "PUT", passphrase, body: { name } }),
+  // Group of friends of a costume ("" takes it out): they can't vote each other.
+  setFriendGroup: (id, group) => request(`/admin/costumes/${id}/group`, { method: "PUT", passphrase, body: { group } }),
   results: () => request("/results", { passphrase }),
   users: () => request("/admin/users", { passphrase }),
   createUsers: (users) => request("/users/batch", { method: "POST", passphrase, body: users }).then((r) => r.Users),

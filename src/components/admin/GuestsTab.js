@@ -24,7 +24,7 @@ export function groupByCostume(guests) {
   const groups = new Map();
   for (const g of guests) {
     const key = g.costume_id || 0;
-    if (!groups.has(key)) groups.set(key, { id: key, name: g.costume, members: [] });
+    if (!groups.has(key)) groups.set(key, { id: key, name: g.costume, friendGroup: g.friend_group || "", members: [] });
     groups.get(key).members.push(g);
   }
   return [...groups.values()].sort((a, b) => !a.id - !b.id || a.name.localeCompare(b.name, "es"));
@@ -39,6 +39,7 @@ export default function GuestsTab({ admin, session, toast }) {
   const [busy, setBusy] = useState(false);
   const [fresh, setFresh] = useState([]); // ids just created, highlighted
   const [renaming, setRenaming] = useState(null); // { id, name } of a costume
+  const [grouping, setGrouping] = useState(null); // { id, name, group } of a costume
 
   const { data: guests, error: loadError, load } = useAdminData(admin.users);
 
@@ -112,6 +113,19 @@ export default function GuestsTab({ admin, session, toast }) {
     setBusy(false);
   };
 
+  const saveGroup = async (group) => {
+    setBusy(true);
+    try {
+      await admin.setFriendGroup(grouping.id, group);
+      toast(group.trim() ? `${grouping.name} quedó en "${group.trim()}"` : `${grouping.name} ya no está en un grupo`, "success");
+      setGrouping(null);
+      await load();
+    } catch (err) {
+      toast(`No se pudo guardar el grupo: ${err.message}`);
+    }
+    setBusy(false);
+  };
+
   const copyAll = async () => {
     const text = groupByCostume(guests)
       .map((c) => `${c.name || "Sin disfraz"}\n${c.members.map((g) => `  ${g.name}: ${g.pw_code}`).join("\n")}`)
@@ -123,6 +137,14 @@ export default function GuestsTab({ admin, session, toast }) {
   if (guests === null) return null;
   const preview = parseGuestList(bulkText, bulkVotes);
   const groups = groupByCostume(guests);
+  // Friend groups with their costumes, for the summary and the suggestions.
+  const friendGroups = new Map();
+  for (const c of groups) {
+    if (!c.friendGroup) continue;
+    const key = c.friendGroup.toLowerCase();
+    if (!friendGroups.has(key)) friendGroups.set(key, { name: c.friendGroup, costumes: [] });
+    friendGroups.get(key).costumes.push(c.name);
+  }
 
   return (
     <div className="stack">
@@ -146,6 +168,30 @@ export default function GuestsTab({ admin, session, toast }) {
         </p>
       )}
 
+      {groups.some((c) => c.id) && (
+        <section className="panel stack">
+          <h2 className="admin__subtitle">Grupos de amigos</h2>
+          <p className="muted">
+            Los disfraces de un mismo grupo no se pueden votar entre sí. Tocá "Grupo" en cada disfraz para armarlos. Solo vos los
+            ves.
+          </p>
+          {friendGroups.size === 0 ? (
+            <p className="muted">Todavía no armaste ningún grupo.</p>
+          ) : (
+            <ul className="guest-list">
+              {[...friendGroups.values()].map((fg) => (
+                <li key={fg.name} className="guest">
+                  <div className="guest__info">
+                    <p className="candidate__costume">{fg.name}</p>
+                    <p className="candidate__name">{fg.costumes.join(" · ")}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
       <section className="panel">
         {guests.length === 0 ? (
           <p className="muted">Todavía no hay invitados. Compartí el link para que se anoten, o agregalos vos.</p>
@@ -153,11 +199,22 @@ export default function GuestsTab({ admin, session, toast }) {
           groups.map((c) => (
             <div key={c.id} className="costume-group">
               <div className="costume-group__head">
-                <h3>{c.name || "Sin disfraz"}</h3>
+                <h3>
+                  {c.name || "Sin disfraz"} {c.friendGroup && <span className="tag tag--mint">{c.friendGroup}</span>}
+                </h3>
                 {c.id > 0 && (
-                  <button type="button" className="link" onClick={() => setRenaming({ id: c.id, name: c.name })}>
-                    Renombrar
-                  </button>
+                  <span className="costume-group__actions">
+                    <button
+                      type="button"
+                      className="link"
+                      onClick={() => setGrouping({ id: c.id, name: c.name, group: c.friendGroup })}
+                    >
+                      Grupo
+                    </button>
+                    <button type="button" className="link" onClick={() => setRenaming({ id: c.id, name: c.name })}>
+                      Renombrar
+                    </button>
+                  </span>
                 )}
               </div>
               <ul className="guest-list">
@@ -234,6 +291,57 @@ export default function GuestsTab({ admin, session, toast }) {
             {preview.length ? `Agregar ${preview.length}` : "Agregar"}
           </button>
         </div>
+      </Sheet>
+
+      <Sheet open={Boolean(grouping)} onClose={() => setGrouping(null)} labelledBy="group-title">
+        {grouping && (
+          <form
+            className="stack"
+            onSubmit={(e) => {
+              e.preventDefault();
+              saveGroup(grouping.group);
+            }}
+            noValidate
+          >
+            <h2 id="group-title">Grupo de {grouping.name}</h2>
+            <input
+              className="input"
+              value={grouping.group}
+              onChange={(e) => setGrouping({ ...grouping, group: e.target.value })}
+              maxLength={60}
+              list="friend-group-options"
+              placeholder="ej: Amigos de la facu"
+              aria-label="Grupo de amigos"
+              autoFocus
+            />
+            <datalist id="friend-group-options">
+              {[...friendGroups.values()].map((fg) => (
+                <option key={fg.name} value={fg.name} />
+              ))}
+            </datalist>
+            <p className="muted">
+              Escribí el mismo nombre en los disfraces de un mismo grupo: no se van a poder votar entre ellos. Los votos que ya
+              hicieron no cambian.
+            </p>
+            <div className="sheet__actions" style={{ justifyContent: "space-between" }}>
+              {grouping.group ? (
+                <button type="button" className="btn btn--quiet" disabled={busy} onClick={() => saveGroup("")}>
+                  Sacar del grupo
+                </button>
+              ) : (
+                <span />
+              )}
+              <div className="sheet__actions">
+                <button type="button" className="btn btn--quiet" onClick={() => setGrouping(null)}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn" disabled={busy}>
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
       </Sheet>
 
       <Sheet open={Boolean(renaming)} onClose={() => setRenaming(null)} labelledBy="rename-title">

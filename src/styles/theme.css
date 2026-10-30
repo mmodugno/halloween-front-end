@@ -1243,3 +1243,13 @@ html {
   color: var(--gold);
   font-size: var(--text-md);
 }
+
+.costume-group__actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.costume-group__head .tag {
+  vertical-align: middle;
+}
