@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Sheet from "../pixel/Sheet";
 
-const EMPTY = { name: "", costume: "", pending_votes: 2, is_admin: false };
+const EMPTY = { name: "", costume: "", costume_id: 0, pending_votes: 2, is_admin: false };
+
+// Whether the guest shares their costume with someone else.
+const sharesCostume = (guest, costumes) =>
+  Boolean(guest?.costume_id) && (costumes.find((c) => c.id === guest.costume_id)?.members.length || 0) > 1;
 
 // Form to add a guest or edit one. Deleting is offered when editing someone
-// other than yourself.
+// other than yourself. costumes: [{ id, name, members: [names] }].
 export default function GuestSheet({ guest, costumes = [], isSelf, onSave, onDelete, onClose }) {
   const editing = Boolean(guest?.id);
   const [form, setForm] = useState(EMPTY);
@@ -12,10 +16,18 @@ export default function GuestSheet({ guest, costumes = [], isSelf, onSave, onDel
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    setForm(guest ? { ...EMPTY, ...guest } : EMPTY);
+    // costume_id 0 means "their own costume, named by the text field". Someone
+    // alone in a costume starts there, so editing the text renames it.
+    const own = !sharesCostume(guest, costumes);
+    setForm(guest ? { ...EMPTY, ...guest, costume_id: own ? 0 : guest.costume_id } : EMPTY);
     setError("");
     setSaving(false);
+    // Only when another guest is opened, not when the list reloads.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [guest]);
+
+  // Costumes they can join: any but the one they wear alone.
+  const joinable = costumes.filter((c) => c.id !== guest?.costume_id || sharesCostume(guest, costumes));
 
   const set = (field) => (e) =>
     setForm((f) => ({
@@ -31,8 +43,7 @@ export default function GuestSheet({ guest, costumes = [], isSelf, onSave, onDel
       return;
     }
     setSaving(true);
-    // Only the costume text decides the group here, not the old costume id.
-    const ok = await onSave({ ...form, costume_id: 0, pending_votes: Math.max(0, form.pending_votes || 0) });
+    const ok = await onSave({ ...form, pending_votes: Math.max(0, form.pending_votes || 0) });
     if (!ok) setSaving(false);
   };
 
@@ -52,21 +63,32 @@ export default function GuestSheet({ guest, costumes = [], isSelf, onSave, onDel
           </label>
           <label className="field">
             <span>Disfraz</span>
-            <input
+            <select
               className="input"
-              value={form.costume}
-              onChange={set("costume")}
-              placeholder="Se puede completar después"
-              list="costume-options"
-              maxLength={60}
-            />
-            <datalist id="costume-options">
-              {costumes.map((c) => (
-                <option key={c} value={c} />
+              value={form.costume_id}
+              onChange={(e) => setForm((f) => ({ ...f, costume_id: Number(e.target.value) }))}
+            >
+              <option value={0}>Uno propio</option>
+              {joinable.map((c) => (
+                <option key={c.id} value={c.id}>
+                  Con {c.members.join(", ")}: {c.name}
+                </option>
               ))}
-            </datalist>
-            <span className="muted">Con el nombre de un disfraz que ya existe, pasa a ese grupo.</span>
+            </select>
           </label>
+          {form.costume_id === 0 && (
+            <label className="field">
+              <span>¿De qué?</span>
+              <input
+                className="input"
+                value={form.costume}
+                onChange={set("costume")}
+                placeholder="Se puede completar después"
+                maxLength={60}
+              />
+              <span className="muted">Aunque se llame igual que otro, queda separado.</span>
+            </label>
+          )}
           <label className="field">
             <span>{editing ? "Votos que le quedan" : "Votos"}</span>
             <input

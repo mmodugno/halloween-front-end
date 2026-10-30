@@ -251,7 +251,7 @@ export default function GuestsTab({ admin, session, toast }) {
 
       <GuestSheet
         guest={editing}
-        costumes={groups.filter((c) => c.id).map((c) => c.name)}
+        costumes={groups.filter((c) => c.id).map((c) => ({ id: c.id, name: c.name, members: c.members.map((g) => g.name) }))}
         isSelf={editing?.id === session.userID}
         onSave={save}
         onDelete={setDeleting}
@@ -261,8 +261,8 @@ export default function GuestsTab({ admin, session, toast }) {
       <Sheet open={bulkOpen} onClose={() => setBulkOpen(false)} labelledBy="bulk-title">
         <h2 id="bulk-title">Pegar una lista</h2>
         <p className="muted">
-          Un invitado por renglón: nombre y disfraz separados por una coma. Si dos personas tienen el mismo disfraz, quedan en el
-          mismo grupo.
+          Un invitado por renglón: nombre y disfraz separados por una coma. Cada uno queda con su disfraz, aunque se llame
+          igual que otro: para juntarlos, editá a la persona y elegí con quién va.
         </p>
         <textarea
           className="input"
